@@ -1,6 +1,6 @@
 # Groupify.Mobile
 
-A app to group a set of individuals and keep track of how many times they have been in a group together before
+A app to group a set of individuals and keep track of how many times they have been in a group together. 
 
 ## [Functional Requirements](https://github.com/haavamoa/Groupify.Mobile/issues/1) 
 
