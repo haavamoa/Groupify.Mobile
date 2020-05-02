@@ -6,6 +6,10 @@
              mc:Ignorable="d"
              x:Class="Groupify.Mobile.App">
     <Application.Resources>
-
+        <Color x:Key="Theme">#4A6572</Color>
+        <Color x:Key="ThemeDarker">#344955</Color>
+        <Color x:Key="ThemeInteract">#F9AA33</Color>
+        <Color x:Key="ThemePositive">#33F975</Color>
+        <Color x:Key="ThemeTextColor">#FFFFFF</Color>
     </Application.Resources>
 </Application>
