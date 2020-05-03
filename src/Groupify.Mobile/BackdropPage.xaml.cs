@@ -25,5 +25,20 @@ namespace Groupify.Mobile
             get => (View)GetValue(MainContentProperty);
             set => SetValue(MainContentProperty, value);
         }
+
+        private void OnBackClicked(object sender, EventArgs e)
+        {
+            //Navigate back
+        }
+
+        public async Task SetView(ContentView view)
+        {
+            
+        }
+
+        public async Task RemoveView(ContentView view)
+        {
+
+        }
     }
 }

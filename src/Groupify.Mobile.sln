@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Groupify.Mobile.Android", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Groupify.Mobile.iOS", "Groupify.Mobile.iOS\Groupify.Mobile.iOS.csproj", "{F355C4D1-C7CB-49B1-8BC7-5335BDA17BE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Groupify.Mobile", "Groupify.Mobile\Groupify.Mobile.csproj", "{375E0A5C-6671-4CB6-93EF-8E58D2E4333C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Groupify.Mobile", "Groupify.Mobile\Groupify.Mobile.csproj", "{375E0A5C-6671-4CB6-93EF-8E58D2E4333C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

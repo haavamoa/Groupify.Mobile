@@ -15,19 +15,33 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0"
-                  Padding="15">
-                <Label Text="{Binding Source={x:Reference codeBehind}, Path=Title}"
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <ImageButton Source="Back"
+                             BackgroundColor="Transparent"
+                             Padding="20"
+                             Grid.Column="0"
+                             HorizontalOptions="Start"
+                             Clicked="OnBackClicked"
+                             VerticalOptions="Center" />
+                <Label Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       Text="{Binding Source={x:Reference codeBehind}, Path=Title}"
                        FontAttributes="Bold"
-                       FontFamily="SegoeUI"
                        HorizontalOptions="Center"
+                       VerticalTextAlignment="Center"
                        FontSize="50"
                        TextColor="White" />
             </Grid>
 
             <yummy:PancakeView Grid.Row="1"
                                CornerRadius="60,0,0,0"
-                               BackgroundColor="{StaticResource Theme}" />
+                               BackgroundColor="{StaticResource Theme}">
+                <ContentView Content="{Binding Source={x:Reference codeBehind}, Path=MainContent}"/>
+            </yummy:PancakeView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
