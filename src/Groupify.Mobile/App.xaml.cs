@@ -8,7 +8,6 @@ namespace Groupify.Mobile
 {
     public partial class App : Application
     {
-        private INavigationService m_navigationService;
 
         public App()
         {
@@ -16,15 +15,17 @@ namespace Groupify.Mobile
             Library.Initialize();
             var container = new ServiceContainer(new ContainerOptions { EnablePropertyInjection = false });
             container.RegisterFrom<CompositionRoot>();
-            m_navigationService = container.GetInstance<INavigationService>();
+            NavigationService = container.GetInstance<INavigationService>();
 
-            MainPage = new BackdropPage(m_navigationService);
+            MainPage = new BackdropPage(NavigationService);
         }
 
         protected override async void OnStart()
         {
-            await m_navigationService.Initialize();
+            await NavigationService.Initialize();
         }
+
+        public INavigationService NavigationService { get; }
 
         protected override void OnSleep()
         {

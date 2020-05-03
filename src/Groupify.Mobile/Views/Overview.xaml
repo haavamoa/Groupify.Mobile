@@ -1,5 +1,6 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Views:BackdropMainView xmlns="http://xamarin.com/schemas/2014/forms" 
+﻿<?xml version="1.0"
+      encoding="UTF-8"?>
+<Views:BackdropMainView xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,8 +9,13 @@
                         mc:Ignorable="d"
                         x:Class="Groupify.Mobile.Views.Overview"
                         Title="Klasser"
-                        x:DataType="{x:Type ViewModels:OverviewViewModel}">
-  <Grid Padding="10">
-        <Button Command="{Binding NavigateToGroupingCommand}"></Button>
-  </Grid>
+                        x:DataType="{x:Type ViewModels:OverviewViewModel}"
+                        ToolbarItemCommand="{Binding RegisterIndividualsGroupCommand}"
+                        ToolbarItemImageSource="Add">
+    <Grid Padding="10">
+        <Button HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Text="Click me"
+                Command="{Binding NavigateToGroupingCommand}" />
+    </Grid>
 </Views:BackdropMainView>

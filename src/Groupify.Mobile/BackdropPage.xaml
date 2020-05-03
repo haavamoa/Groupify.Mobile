@@ -17,7 +17,7 @@
                 <RowDefinition Height="70" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
+            <Grid x:Name="headerGrid" Grid.Row="0" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -30,16 +30,23 @@
                              HorizontalOptions="Start"
                              Clicked="OnBackClicked"
                              VerticalOptions="Center"
-                             Opacity="0" />
+                             />
                 <Label x:Name="titleLabel"
                        Grid.Column="0"
                        Grid.ColumnSpan="2"
-                       Text="{Binding Source={x:Reference codeBehind}, Path=Title}"
+                       Text="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.Title}"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"
                        VerticalTextAlignment="Center"
                        FontSize="50"
                        TextColor="White" />
+                <ImageButton x:Name="toolbarItemButton"
+                             Grid.Column="1"
+                             Command="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.ToolbarItemCommand}"
+                             Source="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.ToolbarItemImageSource}"
+                             Padding="20"
+                             BackgroundColor="Transparent"
+                             HorizontalOptions="End"/>
             </Grid>
 
             <yummy:PancakeView x:Name="mainView"

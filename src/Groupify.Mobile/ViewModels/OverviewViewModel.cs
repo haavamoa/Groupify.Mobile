@@ -13,6 +13,7 @@ namespace Groupify.Mobile.ViewModels
         public OverviewViewModel(INavigationService navigationService)
         {
             NavigateToGroupingCommand = new AsyncCommand(navigationService.Push<IndividualSelectorViewModel>, onException:OnException);
+            RegisterIndividualsGroupCommand = new AsyncCommand(navigationService.Push<RegisterViewModel>);
         }
 
         private void OnException(Exception obj)
@@ -25,6 +26,7 @@ namespace Groupify.Mobile.ViewModels
 
         public IAsyncCommand NavigateToGroupingCommand { get; }
 
+        public IAsyncCommand RegisterIndividualsGroupCommand { get; }
 
         public async Task Initialize()
         {

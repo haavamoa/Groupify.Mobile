@@ -1,5 +1,6 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Views:BackdropMainView xmlns="http://xamarin.com/schemas/2014/forms" 
+﻿<?xml version="1.0"
+      encoding="UTF-8"?>
+<Views:BackdropMainView xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -7,9 +8,9 @@
                         mc:Ignorable="d"
                         Title="Klasse 7b"
                         x:Class="Groupify.Mobile.Views.IndividualSelectorView">
-  <ContentView.Content>
-      <StackLayout>
-          <Label Text="Hello Xamarin.Forms!" />
-      </StackLayout>
-  </ContentView.Content>
+    <Button Text="Click me"
+            Clicked="Button_OnClicked"
+            Padding="50"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
 </Views:BackdropMainView>
