@@ -1,4 +1,5 @@
-﻿using Groupify.Mobile.Abstractions;
+﻿using DIPS.Xamarin.UI;
+using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Services;
 using LightInject;
 using Xamarin.Forms;
@@ -12,11 +13,12 @@ namespace Groupify.Mobile
         public App()
         {
             InitializeComponent();
+            Library.Initialize();
             var container = new ServiceContainer(new ContainerOptions { EnablePropertyInjection = false });
             container.RegisterFrom<CompositionRoot>();
             m_navigationService = container.GetInstance<INavigationService>();
 
-            MainPage = new MainPage();
+            MainPage = new BackdropPage(m_navigationService);
         }
 
         protected override async void OnStart()

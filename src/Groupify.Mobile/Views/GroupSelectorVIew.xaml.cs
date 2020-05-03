@@ -10,7 +10,7 @@ using Xamarin.Forms.Xaml;
 namespace Groupify.Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GroupSelectorView : ContentView
+    public partial class GroupSelectorView
     {
         public GroupSelectorView()
         {

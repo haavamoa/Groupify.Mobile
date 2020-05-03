@@ -5,9 +5,11 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             xmlns:dxui="http://dips.xamarin.ui.com"
              mc:Ignorable="d"
              x:Class="Groupify.Mobile.BackdropPage"
              BackgroundColor="{StaticResource ThemeDarker}"
+             Title="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.Title}"
              x:Name="codeBehind">
     <ContentPage.Content>
         <Grid RowSpacing="0">
@@ -20,14 +22,17 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <ImageButton Source="Back"
+                <ImageButton x:Name="navigateBackButton"
+                             Source="Back"
                              BackgroundColor="Transparent"
                              Padding="20"
                              Grid.Column="0"
                              HorizontalOptions="Start"
                              Clicked="OnBackClicked"
-                             VerticalOptions="Center" />
-                <Label Grid.Column="0"
+                             VerticalOptions="Center"
+                             Opacity="0" />
+                <Label x:Name="titleLabel"
+                       Grid.Column="0"
                        Grid.ColumnSpan="2"
                        Text="{Binding Source={x:Reference codeBehind}, Path=Title}"
                        FontAttributes="Bold"
@@ -37,11 +42,10 @@
                        TextColor="White" />
             </Grid>
 
-            <yummy:PancakeView Grid.Row="1"
+            <yummy:PancakeView x:Name="mainView"
+                               Grid.Row="1"
                                CornerRadius="60,0,0,0"
-                               BackgroundColor="{StaticResource Theme}">
-                <ContentView Content="{Binding Source={x:Reference codeBehind}, Path=MainContent}"/>
-            </yummy:PancakeView>
+                               BackgroundColor="{StaticResource Theme}" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

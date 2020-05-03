@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.ViewModels;
 using Groupify.Mobile.Views;
@@ -12,7 +13,7 @@ namespace Groupify.Mobile.Services
 {
     public class NavigationService : INavigationService, INotifyPropertyChanged
     {
-        private readonly Dictionary<IViewModel, ContentView> m_lookup = new Dictionary<IViewModel, ContentView>();
+        private readonly Dictionary<Type, Func<ContentView>> m_lookup = new Dictionary<Type, Func<ContentView>>();
         private readonly IServiceFactory m_serviceFactory;
 
         public NavigationService(IServiceFactory serviceFactory)
@@ -26,28 +27,26 @@ namespace Groupify.Mobile.Services
             var overView = new Overview();
             await InternalPush(overviewViewModel, overView, async viewmodel => await viewmodel.Initialize());
 
-            m_lookup.Add(overviewViewModel, overView);
-            m_lookup.Add(m_serviceFactory.GetInstance<RegisterViewModel>(), new RegisterView());
-            m_lookup.Add(m_serviceFactory.GetInstance<GroupSelectorViewModel>(), new GroupSelectorView());
-            m_lookup.Add(m_serviceFactory.GetInstance<GroupsOverviewViewModel>(), new GroupsOverview());
-            m_lookup.Add(m_serviceFactory.GetInstance<IndividualDetailViewModel>(), new IndividualDetailView());
-            m_lookup.Add(m_serviceFactory.GetInstance<IndividualSelectorViewModel>(), new IndividualSelectorView());
+            m_lookup.Add(typeof(OverviewViewModel), () => overView);
+            m_lookup.Add(typeof(RegisterViewModel), () => new RegisterView());
+            m_lookup.Add(typeof(GroupSelectorViewModel), () => new GroupSelectorView());
+            m_lookup.Add(typeof(GroupsOverviewViewModel), () => new GroupsOverview());
+            m_lookup.Add(typeof(IndividualDetailViewModel), () => new IndividualDetailView());
+            m_lookup.Add(typeof(IndividualSelectorViewModel), () => new IndividualSelectorView());
         }
 
         public async Task Pop()
         {
-            var viewModelToPop = Stack.Pop();
-            var view = InternalGetView(viewModelToPop);
-
-            await ((BackdropPage)Application.Current.MainPage).RemoveView(view);
-            await ((BackdropPage)Application.Current.MainPage).SetView(InternalGetView(Stack.Peek()));
+            Stack.Pop();
+            PropertyChanged.Raise(nameof(Stack));
+            await ((BackdropPage)Application.Current.MainPage).SetView(Stack.Peek());
         }
 
         public async Task Push<TViewModel>(Action<TViewModel> beforeNavigation) where TViewModel : IViewModel
         {
             var viewmodel = m_serviceFactory.GetInstance<TViewModel>();
 
-            var view = InternalGetView(viewmodel);
+            var view = InternalGetView<TViewModel>();
 
             await InternalPush(viewmodel, view, beforeNavigation);
         }
@@ -57,20 +56,22 @@ namespace Groupify.Mobile.Services
             await Push<TViewModel>(viewModel => { });
         }
 
-        public Stack<IViewModel> Stack { get; } = new Stack<IViewModel>();
+        public Stack<ContentView> Stack { get; } = new Stack<ContentView>();
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ContentView InternalGetView<TViewModel>(TViewModel viewmodel) where TViewModel : IViewModel
+        private ContentView InternalGetView<TViewModel>() where TViewModel : IViewModel
         {
-            if (!m_lookup.TryGetValue(viewmodel, out var view)) throw new Exception("View not found when navigating");
+            if (!m_lookup.TryGetValue(typeof(TViewModel), out var factory)) throw new Exception("View not found when navigating");
 
-            return view;
+            return factory();
         }
 
         private async Task InternalPush<TViewModel>(TViewModel viewmodel, ContentView view, Action<TViewModel> beforeNavigation)
             where TViewModel : IViewModel
         {
-            Stack.Push(viewmodel);
+            Stack.Push(view);
+            PropertyChanged.Raise(nameof(Stack));
             view.BindingContext = viewmodel;
             beforeNavigation?.Invoke(viewmodel);
             await ((BackdropPage)Application.Current.MainPage).SetView(view);

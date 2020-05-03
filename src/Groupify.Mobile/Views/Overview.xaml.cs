@@ -10,7 +10,7 @@ using Xamarin.Forms.Xaml;
 namespace Groupify.Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Overview : ContentView
+    public partial class Overview
     {
         public Overview()
         {

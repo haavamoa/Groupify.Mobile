@@ -3,42 +3,60 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Groupify.Mobile.Abstractions;
+using Groupify.Mobile.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Groupify.Mobile
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    [ContentProperty(nameof(MainContent))]
     public partial class BackdropPage : ContentPage
     {
-        public BackdropPage()
+        private readonly INavigationService m_navigationService;
+        private BackdropMainView m_backdropMainView;
+
+        public BackdropPage(INavigationService navigationService)
         {
+            m_navigationService = navigationService;
             InitializeComponent();
         }
 
-        public static readonly BindableProperty MainContentProperty = BindableProperty.Create(nameof(MainContent), typeof(View), typeof(BackdropPage));
-
-        public View MainContent
+        private async void OnBackClicked(object sender, EventArgs e)
         {
-            get => (View)GetValue(MainContentProperty);
-            set => SetValue(MainContentProperty, value);
+            await m_navigationService.Pop();
         }
 
-        private void OnBackClicked(object sender, EventArgs e)
+        public BackdropMainView BackdropMainView
         {
-            //Navigate back
+            get => m_backdropMainView;
+            set
+            {
+                m_backdropMainView = value; 
+                OnPropertyChanged();
+            }
         }
 
-        public async Task SetView(ContentView view)
+        public  async Task SetView(ContentView view)
         {
-            
+            if (!(view is BackdropMainView backdropMainView)) throw new Exception($"The view has to be of type {typeof(BackdropMainView)}");
+            BackdropMainView = backdropMainView;
+
+            AnimateBackButton();
+
+            mainView.Content = view;
         }
 
-        public async Task RemoveView(ContentView view)
+        private void AnimateBackButton()
         {
-
+            if (m_navigationService.Stack.Count > 1)
+            {
+                navigateBackButton.FadeTo(1.0);
+            }
+            else
+            {
+                navigateBackButton.FadeTo(0.0);
+            }
         }
     }
 }
