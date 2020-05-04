@@ -12,10 +12,130 @@
                         x:DataType="{x:Type ViewModels:OverviewViewModel}"
                         ToolbarItemCommand="{Binding RegisterIndividualsGroupCommand}"
                         ToolbarItemImageSource="Add">
-    <Grid Padding="10">
+    <!--<Grid Padding="10">
         <Button HorizontalOptions="Center"
                 VerticalOptions="Center"
                 Text="Click me"
                 Command="{Binding NavigateToGroupingCommand}" />
-    </Grid>
+    </Grid>-->
+    <RefreshView>
+        <ScrollView>
+            <StackLayout Spacing="20"
+                         Padding="20,10,40,0">
+                <Frame HeightRequest="100"
+                       WidthRequest="40"
+                       VerticalOptions="Start"
+                       CornerRadius="50"
+                       BackgroundColor="{StaticResource ThemeDarker}"
+                       HasShadow="False">
+                    <StackLayout HorizontalOptions="Center"
+                                 Spacing="0">
+                        <Label Text="Klasse 7b"
+                               FontSize="50"
+                               TextColor="White"
+                               FontAttributes="Bold" />
+                        <Label Text="Antall elever: 20"
+                               TextColor="White" />
+                    </StackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NavigateToGroupingCommand}" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+                <Frame HeightRequest="100"
+                       WidthRequest="40"
+                       VerticalOptions="Start"
+                       CornerRadius="50"
+                       BackgroundColor="{StaticResource ThemeDarker}"
+                       HasShadow="False">
+                    <StackLayout HorizontalOptions="Center"
+                                 Spacing="0">
+                        <Label Text="Klasse 7b"
+                               FontSize="50"
+                               TextColor="White"
+                               FontAttributes="Bold" />
+                        <Label Text="Antall elever: 20"
+                               TextColor="White" />
+                    </StackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NavigateToGroupingCommand}" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+                <Frame HeightRequest="100"
+                       WidthRequest="40"
+                       VerticalOptions="Start"
+                       CornerRadius="50"
+                       BackgroundColor="{StaticResource ThemeDarker}"
+                       HasShadow="False">
+                    <StackLayout HorizontalOptions="Center"
+                                 Spacing="0">
+                        <Label Text="Klasse 7b"
+                               FontSize="50"
+                               TextColor="White"
+                               FontAttributes="Bold" />
+                        <Label Text="Antall elever: 20"
+                               TextColor="White" />
+                    </StackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NavigateToGroupingCommand}" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+                <Frame HeightRequest="100"
+                       WidthRequest="40"
+                       VerticalOptions="Start"
+                       CornerRadius="50"
+                       BackgroundColor="{StaticResource ThemeDarker}"
+                       HasShadow="False">
+                    <StackLayout HorizontalOptions="Center"
+                                 Spacing="0">
+                        <Label Text="Klasse 7b"
+                               FontSize="50"
+                               TextColor="White"
+                               FontAttributes="Bold" />
+                        <Label Text="Antall elever: 20"
+                               TextColor="White" />
+                    </StackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NavigateToGroupingCommand}" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+                <Frame HeightRequest="100"
+                       WidthRequest="40"
+                       VerticalOptions="Start"
+                       CornerRadius="50"
+                       BackgroundColor="{StaticResource ThemeDarker}"
+                       HasShadow="False">
+                    <StackLayout HorizontalOptions="Center"
+                                 Spacing="0">
+                        <Label Text="Klasse 7b"
+                               FontSize="50"
+                               TextColor="White"
+                               FontAttributes="Bold" />
+                        <Label Text="Antall elever: 20"
+                               TextColor="White" />
+                    </StackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NavigateToGroupingCommand}" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+                <Frame HeightRequest="100"
+                       WidthRequest="40"
+                       VerticalOptions="Start"
+                       CornerRadius="50"
+                       BackgroundColor="{StaticResource ThemeDarker}"
+                       HasShadow="False">
+                    <StackLayout HorizontalOptions="Center"
+                                 Spacing="0">
+                        <Label Text="Klasse 7b"
+                               FontSize="50"
+                               TextColor="White"
+                               FontAttributes="Bold" />
+                        <Label Text="Antall elever: 20"
+                               TextColor="White" />
+                    </StackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NavigateToGroupingCommand}" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+            </StackLayout>
+        </ScrollView></RefreshView>
 </Views:BackdropMainView>

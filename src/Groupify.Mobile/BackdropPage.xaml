@@ -10,6 +10,8 @@
              x:Class="Groupify.Mobile.BackdropPage"
              BackgroundColor="{StaticResource ThemeDarker}"
              Title="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.Title}"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             ios:Page.UseSafeArea="true"
              x:Name="codeBehind">
     <ContentPage.Content>
         <Grid RowSpacing="0">
