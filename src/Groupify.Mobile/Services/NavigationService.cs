@@ -25,7 +25,7 @@ namespace Groupify.Mobile.Services
         {
             var overviewViewModel = m_serviceFactory.GetInstance<OverviewViewModel>();
             var overView = new Overview();
-            await InternalPush(overviewViewModel, overView, async viewmodel => await viewmodel.Initialize());
+            await InternalPush(overviewViewModel, overView, vm => { });
 
             m_lookup.Add(typeof(OverviewViewModel), () => overView);
             m_lookup.Add(typeof(RegisterViewModel), () => new RegisterView());
@@ -70,11 +70,16 @@ namespace Groupify.Mobile.Services
         private async Task InternalPush<TViewModel>(TViewModel viewmodel, ContentView view, Action<TViewModel> beforeNavigation)
             where TViewModel : IViewModel
         {
+            var config = new ViewModelConfiguration();
+            viewmodel.Setup(config);
+
             Stack.Push(view);
             PropertyChanged.Raise(nameof(Stack));
             view.BindingContext = viewmodel;
             beforeNavigation?.Invoke(viewmodel);
+            var initializeTask = config.InitializeMethod();
             await ((BackdropPage)Application.Current.MainPage).SetView(view);
+            await initializeTask;
         }
     }
 }

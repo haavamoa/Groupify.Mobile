@@ -1,16 +1,15 @@
-﻿<?xml version="1.0"
-      encoding="UTF-8"?>
-<Views:BackdropMainView xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Views:BackdropMainView x:Class="Groupify.Mobile.Views.IndividualSelectorView"
+                        xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                        xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                        xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
-                        mc:Ignorable="d"
                         Title="Klasse 7b"
-                        x:Class="Groupify.Mobile.Views.IndividualSelectorView">
-    <Button Text="Click me"
+                        mc:Ignorable="d">
+    <Button Padding="50"
             Clicked="Button_OnClicked"
-            Padding="50"
             HorizontalOptions="Center"
+            Text="Click me"
             VerticalOptions="Center" />
 </Views:BackdropMainView>

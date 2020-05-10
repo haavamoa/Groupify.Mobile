@@ -6,19 +6,22 @@
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                         xmlns:ViewModels="clr-namespace:Groupify.Mobile.ViewModels;assembly=Groupify.Mobile"
                         xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
-                        mc:Ignorable="d"
+                        mc:Ignorable="d dblend"
                         x:Class="Groupify.Mobile.Views.Overview"
                         Title="Klasser"
                         x:DataType="{x:Type ViewModels:OverviewViewModel}"
                         ToolbarItemCommand="{Binding RegisterIndividualsGroupCommand}"
-                        ToolbarItemImageSource="Add">
+                        ToolbarItemImageSource="Add"
+                        xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
+                        dblend:DataContext="{dblend:DesignInstance ViewModels:OverviewViewModel}">
     <!--<Grid Padding="10">
         <Button HorizontalOptions="Center"
                 VerticalOptions="Center"
                 Text="Click me"
                 Command="{Binding NavigateToGroupingCommand}" />
     </Grid>-->
-    <RefreshView>
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
         <ScrollView>
             <StackLayout Spacing="20"
                          Padding="20,10,40,0">

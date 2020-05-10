@@ -8,6 +8,6 @@ namespace Groupify.Mobile.ViewModels
 #nullable disable
         public event PropertyChangedEventHandler PropertyChanged;
 #nullable restore
-
+        public void Setup(ViewModelConfiguration configuration) { }
     }
 }

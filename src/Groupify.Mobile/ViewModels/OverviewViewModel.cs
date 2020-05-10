@@ -3,23 +3,41 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DIPS.Xamarin.UI.Commands;
+using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
-using Groupify.Mobile.Services;
 
 namespace Groupify.Mobile.ViewModels
 {
     public class OverviewViewModel : IViewModel
     {
-        public OverviewViewModel(INavigationService navigationService)
+        private bool m_isRefreshing;
+        private readonly IDeviceDataBase m_database;
+
+        public OverviewViewModel(INavigationService navigationService, IDeviceDataBase database)
         {
-            NavigateToGroupingCommand = new AsyncCommand(navigationService.Push<IndividualSelectorViewModel>, onException:OnException);
+            NavigateToGroupingCommand = new AsyncCommand(navigationService.Push<IndividualSelectorViewModel>);
             RegisterIndividualsGroupCommand = new AsyncCommand(navigationService.Push<RegisterViewModel>);
+            RefreshCommand = new AsyncCommand(Refresh);
+            m_database = database;
         }
 
-        private void OnException(Exception obj)
+        public void Setup(ViewModelConfiguration configuration)
         {
-            
+            configuration.InitializeMethod = Initialize;
         }
+
+        public async Task Initialize()
+        {
+            var items = await m_database.GetIndividualsGroups();
+        }
+
+
+        private async Task Refresh()
+        {
+            await Initialize();
+            IsRefreshing = false;
+        }
+
 #nullable disable
         public event PropertyChangedEventHandler PropertyChanged;
 #nullable restore
@@ -28,9 +46,11 @@ namespace Groupify.Mobile.ViewModels
 
         public IAsyncCommand RegisterIndividualsGroupCommand { get; }
 
-        public async Task Initialize()
+        public ICommand RefreshCommand { get; }
+        public bool IsRefreshing
         {
-            
+            get => m_isRefreshing;
+            set => PropertyChanged.RaiseWhenSet(ref m_isRefreshing, value);
         }
     }
 }
