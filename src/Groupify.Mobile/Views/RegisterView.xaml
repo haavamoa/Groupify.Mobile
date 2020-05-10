@@ -5,12 +5,30 @@
                         xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                        mc:Ignorable="d">
-    <ContentView.Content>
-        <StackLayout>
-            <Button HorizontalOptions="Center"
-                    Text="Add"
-                    VerticalOptions="Center" />
-        </StackLayout>
-    </ContentView.Content>
+                        xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                        xmlns:ViewModels="clr-namespace:Groupify.Mobile.ViewModels;assembly=Groupify.Mobile"
+                        x:DataType="{x:Type ViewModels:RegisterViewModel}"
+                        Title="Ny klasse"
+                        mc:Ignorable="d dblend"
+                        xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
+                        dblend:DataContext="{dblend:DesignInstance ViewModels:RegisterViewModel}">
+
+    <Grid Margin="20,20,50,0" 
+          >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <yummy:PancakeView Grid.Row="0"
+                           Padding="10"
+                           CornerRadius="30,0,0,0"
+                           BackgroundColor="{StaticResource ThemeDarker}">
+            <Entry Text="{Binding NewName}"
+                   Placeholder="Navn"
+                   FontSize="50" 
+                   TextColor="White"
+                   
+                   />
+        </yummy:PancakeView>
+    </Grid>
 </Views:BackdropMainView>
