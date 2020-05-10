@@ -11,7 +11,7 @@ namespace Groupify.Mobile.ViewModels
     {
         private readonly IDeviceDataBase m_database;
 #nullable disable
-        private IndividualsGroup m_newIndividualsGroup;
+        private Group m_newIndividualsGroup;
 #nullable restore
 
         public RegisterViewModel(IDeviceDataBase database)
@@ -26,7 +26,7 @@ namespace Groupify.Mobile.ViewModels
 
         private Task Initialize()
         {
-            m_newIndividualsGroup = new IndividualsGroup();
+            m_newIndividualsGroup = new Group();
             return Task.CompletedTask;
         }
 

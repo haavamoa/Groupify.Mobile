@@ -189,6 +189,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
+    <None Include="..\Groupify.Mobile\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <AndroidResource Include="Resources\AboutResources.txt" />

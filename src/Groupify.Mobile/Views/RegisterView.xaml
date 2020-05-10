@@ -9,9 +9,9 @@
                         xmlns:ViewModels="clr-namespace:Groupify.Mobile.ViewModels;assembly=Groupify.Mobile"
                         x:DataType="{x:Type ViewModels:RegisterViewModel}"
                         Title="Ny klasse"
-                        mc:Ignorable="d dblend"
                         xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
-                        dblend:DataContext="{dblend:DesignInstance ViewModels:RegisterViewModel}">
+                        dblend:DataContext="{dblend:DesignInstance ViewModels:RegisterViewModel}"
+                        mc:Ignorable="d dblend">
 
     <Grid Margin="20,20,50,0" 
           >

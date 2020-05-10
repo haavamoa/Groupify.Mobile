@@ -15,7 +15,7 @@ namespace Groupify.Mobile
         {
             serviceRegistry.Register<INavigationService>(factory => new NavigationService(factory), new PerContainerLifetime());
             serviceRegistry.RegisterViewModels();
-            serviceRegistry.Register<IDeviceDataBase>(fact => new DeviceDatabase(OnDatabaseExceptions), lifetime: new PerContainerLifetime());
+            serviceRegistry.Register<IDeviceDataBase>(fact => new DeviceDatabase(), lifetime: new PerContainerLifetime());
         }
     }
 

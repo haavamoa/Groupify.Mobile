@@ -77,9 +77,8 @@ namespace Groupify.Mobile.Services
             PropertyChanged.Raise(nameof(Stack));
             view.BindingContext = viewmodel;
             beforeNavigation?.Invoke(viewmodel);
-            var initializeTask = config.InitializeMethod();
+            _  = config.InitializeMethod();
             await ((BackdropPage)Application.Current.MainPage).SetView(view);
-            await initializeTask;
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Groupify.Mobile.Abstractions;
-using Groupify.Mobile.Extensions;
 using Groupify.Mobile.Models;
 using SQLite;
 
@@ -18,73 +18,68 @@ namespace Groupify.Mobile.Repository
 
         private static SQLiteAsyncConnection Database => s_lazyInitializer.Value;
 
-        private static bool s_initialized = false;
-        private Action<Exception> m_onException;
+        private Action<Exception>? m_onException;
 
-        public DeviceDatabase(Action<Exception> onException)
+        public async Task Initialize(Action<Exception> onException)
         {
             m_onException = onException;
-            InitializeAsync().SafeFireAndForget(false, m_onException);
-        }
-
-        private async Task InitializeAsync()
-        {
-            if (!s_initialized)
+            var tasks = new List<Task>();
+            if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(IndividualsGroup).Name))
             {
-
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(IndividualsGroup).Name))
-                {
-                    await Database.CreateTablesAsync(CreateFlags.None, typeof(IndividualsGroup)).ConfigureAwait(false);
-                    
-                    s_initialized = true;
-                }
+                tasks.Add(Database.CreateTablesAsync(CreateFlags.None, typeof(Individual)));
             }
+            if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Group).Name))
+            {
+                tasks.Add(Database.CreateTablesAsync(CreateFlags.None, typeof(Group)));
+            }
+            if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(IndividualsGroup).Name))
+            {
+                tasks.Add(Database.CreateTablesAsync(CreateFlags.None, typeof(IndividualsGroup)));
+            }
+
+            await Task.WhenAll(tasks);
         }
 
-        public Task Reset() => Database.DeleteAllAsync<IndividualsGroup>();
+        public Task<Group> GetGroup(int id) => Get<Group>(g => g.Id == id);
+        public Task<IndividualsGroup> GetIndividualsGroup(int id) => Get<IndividualsGroup>(ig => ig.Id == id);
+        public Task<Individual> GetIndividual(int id) => Get<Individual>(g => g.Id == id);
+        public Task<List<IndividualsGroup>> GetAllIndividualsGroups() => GetAll<IndividualsGroup>();
+        public Task<List<Group>> GetAllGroups() => GetAll<Group>();
+        public Task<List<Individual>> GetAllIndividuals() => GetAll<Individual>();
+        public Task<int> Save(Individual individual) => Save(individual, individual.Id);
+        public Task<int> Save(Group group) => Save(group, group.Id);
+        public Task<int> Save(IndividualsGroup group) => Save<IndividualsGroup>(group, group.Id);
 
-        public async Task<List<IndividualsGroup>> GetIndividualsGroups()
+        private async Task<List<T>> GetAll<T>() where T : new()
         {
-            var individualGroups = new List<IndividualsGroup>();
+            var items = new List<T>();
             try
             {
-                individualGroups = await Database.Table<IndividualsGroup>().ToListAsync();
+                items = await Database.Table<T>().ToListAsync();
             }
             catch (Exception exception)
             {
-                m_onException.Invoke(exception);
+                m_onException?.Invoke(exception);
             }
-            return individualGroups;
+            return items;
         }
 
-        public Task<List<IndividualsGroup>> GetItemsNotDoneAsync() =>
-            // SQL queries are also possible
-            Database.QueryAsync<IndividualsGroup>("SELECT * FROM [TodoItem] WHERE [Done] = 0");
-
-        public Task<IndividualsGroup> GetIndividualsGroup(int id) => Database.Table<IndividualsGroup>().Where(i => i.ID == id).FirstOrDefaultAsync();
-
-        public async Task<int> Save(IndividualsGroup group)
+        private async Task<T> Get<T>(Expression<Func<T, bool>> expression) where T : new()
         {
-            var id = 0;
+            var item = default(T);
             try
             {
-                if (group.ID != 0)
-                {
-                    id = await Database.UpdateAsync(group);
-                }
-                else
-                {
-                    id = await Database.InsertAsync(group);
-                }
+                item = await Database.Table<T>().Where(expression).FirstOrDefaultAsync();
             }
             catch (Exception exception)
             {
-                m_onException.Invoke(exception);
+                m_onException?.Invoke(exception);
             }
-            return id;
+
+            return item;
         }
 
-        public async Task<int> DeleteItemAsync(IndividualsGroup item)
+        private async Task<int> Delete<T>(T item) where T : new()
         {
             var id = 0;
             try
@@ -94,9 +89,30 @@ namespace Groupify.Mobile.Repository
             catch (Exception exception)
             {
 
-                m_onException(exception);
+                m_onException?.Invoke(exception);
             }
             return id;
+        }
+
+        private async Task<int> Save<T>(T item, int id) where T : new()
+        {
+            var newId = 0;
+            try
+            {
+                if (id != 0)
+                {
+                    newId = await Database.UpdateAsync(item);
+                }
+                else
+                {
+                    newId = await Database.InsertAsync(item);
+                }
+            }
+            catch (Exception exception)
+            {
+                m_onException?.Invoke(exception);
+            }
+            return newId;
         }
     }
 }

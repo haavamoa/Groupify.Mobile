@@ -1,4 +1,4 @@
-# Remove the line below if you want to inherit .editorconfig settings from higher directories
+﻿# Remove the line below if you want to inherit .editorconfig settings from higher directories
 root = true
 
 # C# files
@@ -262,6 +262,9 @@ dotnet_naming_style.begins_with_s_.required_prefix = s_
 dotnet_naming_style.begins_with_s_.required_suffix = 
 dotnet_naming_style.begins_with_s_.word_separator = 
 dotnet_naming_style.begins_with_s_.capitalization = camel_case
+
+# Diagnostics
+dotnet_diagnostic.CS8603.severity = warning
 
 # Xaml files
 [*.{xaml}]
