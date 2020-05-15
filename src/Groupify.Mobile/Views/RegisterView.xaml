@@ -52,26 +52,35 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Entry Grid.Column="0"
+                           Keyboard="Text"
+                           Margin="-2,0,0,0"
                            FontSize="25"
-                           Placeholder="Elevnavn" 
-                           TextColor="White"
-                           Text="{Binding NewIndividualName}"/>
+                           Placeholder="Elevnavn"
+                           ReturnCommand="{Binding AddIndividualCommand}"
+                           Text="{Binding NewIndividualName}"
+                           TextColor="White"/>
                     <ImageButton Grid.Column="1"
                                  BackgroundColor="Transparent"
+                                 Command="{Binding AddIndividualCommand}"
                                  HeightRequest="20"
                                  Source="Add"
-                                 WidthRequest="20"
-                                 Command="{Binding AddIndividualCommand}"/>
+                                 WidthRequest="20" />
                 </Grid>
             </yummy:PancakeView>
             <ScrollView Grid.Row="2"
                         Margin="0,0,0,15"
-                        VerticalScrollBarVisibility="Never"
-                        BackgroundColor="{StaticResource ThemeDarker}">
+                        Padding="10,0"
+                        BackgroundColor="{StaticResource ThemeDarker}"
+                        VerticalScrollBarVisibility="Never">
                 <StackLayout BindableLayout.ItemsSource="{Binding Individuals}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="{x:Type Models:Individual}">
-                            <Label Text="{Binding Name}" />
+                            <Label FontSize="25"
+                                   FontAttributes="Bold"
+                                   Text="{Binding Name}"
+                                   TextColor="White"
+                                   LineBreakMode="TailTruncation"
+                                   />
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </StackLayout>

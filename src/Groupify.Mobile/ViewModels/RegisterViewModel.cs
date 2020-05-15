@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DIPS.Xamarin.UI.Commands;
+using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Models;
 using Xamarin.Forms;
@@ -48,6 +49,7 @@ namespace Groupify.Mobile.ViewModels
             {
                 m_newIndividual.Name = value;
                 ((Command)AddIndividualCommand).ChangeCanExecute();
+                PropertyChanged.Raise();
             }
         }
 
