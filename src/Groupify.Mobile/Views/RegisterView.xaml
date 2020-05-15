@@ -2,33 +2,80 @@
 <Views:BackdropMainView x:Class="Groupify.Mobile.Views.RegisterView"
                         xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                        xmlns:Models="clr-namespace:Groupify.Mobile.Models;assembly=Groupify.Mobile"
+                        xmlns:ViewModels="clr-namespace:Groupify.Mobile.ViewModels;assembly=Groupify.Mobile"
                         xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+                        xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                         xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
-                        xmlns:ViewModels="clr-namespace:Groupify.Mobile.ViewModels;assembly=Groupify.Mobile"
-                        x:DataType="{x:Type ViewModels:RegisterViewModel}"
                         Title="Ny klasse"
-                        xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
                         dblend:DataContext="{dblend:DesignInstance ViewModels:RegisterViewModel}"
+                        x:DataType="{x:Type ViewModels:RegisterViewModel}"
                         mc:Ignorable="d dblend">
 
-    <Grid Margin="20,20,50,0" 
-          >
+    <Grid Margin="20,20,50,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <yummy:PancakeView Grid.Row="0"
                            Padding="10"
-                           CornerRadius="30,0,0,0"
-                           BackgroundColor="{StaticResource ThemeDarker}">
-            <Entry Text="{Binding NewName}"
+                           BackgroundColor="{StaticResource ThemeDarker}"
+                           CornerRadius="30,0,0,0">
+            <Entry FontSize="50"
                    Placeholder="Navn"
-                   FontSize="50" 
-                   TextColor="White"
-                   
-                   />
+                   Text="{Binding NewGroupName}"
+                   TextColor="White" />
         </yummy:PancakeView>
+
+        <Grid Grid.Row="1"
+              RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0"
+                   Padding="30,0,0,0"
+                   FontAttributes="Bold"
+                   FontSize="20"
+                   Text="{Binding Individuals.Count, StringFormat='Antall: {0}'}"
+                   TextColor="White" />
+            <yummy:PancakeView Grid.Row="1"
+                               Padding="10,10,10,0"
+                               BackgroundColor="{StaticResource ThemeDarker}"
+                               CornerRadius="30,0,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Entry Grid.Column="0"
+                           FontSize="25"
+                           Placeholder="Elevnavn" 
+                           TextColor="White"
+                           Text="{Binding NewIndividualName}"/>
+                    <ImageButton Grid.Column="1"
+                                 BackgroundColor="Transparent"
+                                 HeightRequest="20"
+                                 Source="Add"
+                                 WidthRequest="20"
+                                 Command="{Binding AddIndividualCommand}"/>
+                </Grid>
+            </yummy:PancakeView>
+            <ScrollView Grid.Row="2"
+                        Margin="0,0,0,15"
+                        VerticalScrollBarVisibility="Never"
+                        BackgroundColor="{StaticResource ThemeDarker}">
+                <StackLayout BindableLayout.ItemsSource="{Binding Individuals}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="{x:Type Models:Individual}">
+                            <Label Text="{Binding Name}" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+        </Grid>
     </Grid>
 </Views:BackdropMainView>

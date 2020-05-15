@@ -32,6 +32,7 @@
                              HorizontalOptions="Start"
                              Clicked="OnBackClicked"
                              VerticalOptions="Center"
+                             IsVisible="False"
                              />
                 <Label x:Name="titleLabel"
                        Grid.Column="0"

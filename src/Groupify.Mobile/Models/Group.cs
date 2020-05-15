@@ -10,5 +10,6 @@ namespace Groupify.Mobile.Models
         [PrimaryKey]
         public int Id { get; set; }
         public string Name { get; set; }
+        public int Count { get; set; }
     }
 }

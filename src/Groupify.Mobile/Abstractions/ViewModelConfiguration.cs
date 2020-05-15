@@ -5,6 +5,9 @@ namespace Groupify.Mobile.Abstractions
 {
     public class ViewModelConfiguration
     {
-        public Func<Task> InitializeMethod { get; set; }
+        /// <summary>
+        /// This method get's run when the navigationservice initializes
+        /// </summary>
+        public Func<Task>? InitializeMethod { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
@@ -20,6 +21,10 @@ namespace Groupify.Mobile.Services
         {
             m_serviceFactory = serviceFactory;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Stack<ContentView> Stack { get; } = new Stack<ContentView>();
 
         public async Task Initialize()
         {
@@ -55,14 +60,12 @@ namespace Groupify.Mobile.Services
         {
             await Push<TViewModel>(viewModel => { });
         }
-
-        public Stack<ContentView> Stack { get; } = new Stack<ContentView>();
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private ContentView InternalGetView<TViewModel>() where TViewModel : IViewModel
         {
-            if (!m_lookup.TryGetValue(typeof(TViewModel), out var factory)) throw new Exception("View not found when navigating");
+            if (!m_lookup.TryGetValue(typeof(TViewModel), out var factory))
+            {
+                throw new Exception("View not found when navigating");
+            }
 
             return factory();
         }
@@ -70,15 +73,30 @@ namespace Groupify.Mobile.Services
         private async Task InternalPush<TViewModel>(TViewModel viewmodel, ContentView view, Action<TViewModel> beforeNavigation)
             where TViewModel : IViewModel
         {
-            var config = new ViewModelConfiguration();
-            viewmodel.Setup(config);
+            try
+            {
+                var config = new ViewModelConfiguration();
+                viewmodel.Setup(config);
 
-            Stack.Push(view);
-            PropertyChanged.Raise(nameof(Stack));
-            view.BindingContext = viewmodel;
-            beforeNavigation?.Invoke(viewmodel);
-            _  = config.InitializeMethod();
-            await ((BackdropPage)Application.Current.MainPage).SetView(view);
+                Stack.Push(view);
+                PropertyChanged.Raise(nameof(Stack));
+                view.BindingContext = viewmodel;
+                beforeNavigation?.Invoke(viewmodel);
+
+                if(config.InitializeMethod != null)
+                {
+                    _ = config.InitializeMethod();
+                }
+                
+                await ((BackdropPage)Application.Current.MainPage).SetView(view);
+            }
+            catch (Exception e)
+            {
+                var stackLayout = new StackLayout();
+                stackLayout.Children.Add(new Label() { Text = e.Message });
+                stackLayout.Children.Add(new Label() { Text = e.StackTrace });
+                Application.Current.MainPage = new ContentPage() { Content = stackLayout };
+            }
         }
     }
 }
