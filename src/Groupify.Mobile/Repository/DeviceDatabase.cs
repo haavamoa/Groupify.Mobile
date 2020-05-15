@@ -18,11 +18,39 @@ namespace Groupify.Mobile.Repository
 
         private static SQLiteAsyncConnection Database => s_lazyInitializer.Value;
 
-        private Action<Exception>? m_onException;
 
-        public async Task Initialize(Action<Exception> onException)
+        public Task<List<Group>> GetAllGroups()
         {
-            m_onException = onException;
+            return GetAll<Group>();
+        }
+
+        public Task<List<Individual>> GetAllIndividuals()
+        {
+            return GetAll<Individual>();
+        }
+
+        public Task<List<IndividualsGroup>> GetAllIndividualsGroups()
+        {
+            return GetAll<IndividualsGroup>();
+        }
+
+        public Task<Group> GetGroup(int id)
+        {
+            return Get<Group>(g => g.Id == id);
+        }
+
+        public Task<Individual> GetIndividual(int id)
+        {
+            return Get<Individual>(g => g.Id == id);
+        }
+
+        public Task<IndividualsGroup> GetIndividualsGroup(int id)
+        {
+            return Get<IndividualsGroup>(ig => ig.Id == id);
+        }
+
+        public async Task Initialize()
+        {
             var tasks = new List<Task>();
             if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(IndividualsGroup).Name))
             {
@@ -39,80 +67,45 @@ namespace Groupify.Mobile.Repository
 
             await Task.WhenAll(tasks);
         }
-
-        public Task<Group> GetGroup(int id) => Get<Group>(g => g.Id == id);
-        public Task<IndividualsGroup> GetIndividualsGroup(int id) => Get<IndividualsGroup>(ig => ig.Id == id);
-        public Task<Individual> GetIndividual(int id) => Get<Individual>(g => g.Id == id);
-        public Task<List<IndividualsGroup>> GetAllIndividualsGroups() => GetAll<IndividualsGroup>();
-        public Task<List<Group>> GetAllGroups() => GetAll<Group>();
-        public Task<List<Individual>> GetAllIndividuals() => GetAll<Individual>();
-        public Task<int> Save(Individual individual) => Save(individual, individual.Id);
-        public Task<int> Save(Group group) => Save(group, group.Id);
-        public Task<int> Save(IndividualsGroup group) => Save<IndividualsGroup>(group, group.Id);
-
-        private async Task<List<T>> GetAll<T>() where T : new()
+        public Task<int> Save(Individual individual)
         {
-            var items = new List<T>();
-            try
-            {
-                items = await Database.Table<T>().ToListAsync();
-            }
-            catch (Exception exception)
-            {
-                m_onException?.Invoke(exception);
-            }
-            return items;
+            return Save(individual, individual.Id);
         }
 
-        private async Task<T> Get<T>(Expression<Func<T, bool>> expression) where T : new()
+        public Task<int> Save(Group group)
         {
-            var item = default(T);
-            try
-            {
-                item = await Database.Table<T>().Where(expression).FirstOrDefaultAsync();
-            }
-            catch (Exception exception)
-            {
-                m_onException?.Invoke(exception);
-            }
+            return Save(group, group.Id);
+        }
 
-            return item;
+        public Task<int> Save(IndividualsGroup group)
+        {
+            return Save<IndividualsGroup>(group, group.Id);
         }
 
         private async Task<int> Delete<T>(T item) where T : new()
         {
-            var id = 0;
-            try
-            {
-                id = await Database.DeleteAsync(item);
-            }
-            catch (Exception exception)
-            {
-
-                m_onException?.Invoke(exception);
-            }
-            return id;
+            return await Database.DeleteAsync(item);
         }
 
+        private async Task<T> Get<T>(Expression<Func<T, bool>> expression) where T : new()
+        {
+            return await Database.Table<T>().Where(expression).FirstOrDefaultAsync();
+        }
+
+        private async Task<List<T>> GetAll<T>() where T : new()
+        {
+            return await Database.Table<T>().ToListAsync();
+        }
         private async Task<int> Save<T>(T item, int id) where T : new()
         {
-            var newId = 0;
-            try
+            if (id != 0)
             {
-                if (id != 0)
-                {
-                    newId = await Database.UpdateAsync(item);
-                }
-                else
-                {
-                    newId = await Database.InsertAsync(item);
-                }
+                return await Database.UpdateAsync(item);
             }
-            catch (Exception exception)
+            else
             {
-                m_onException?.Invoke(exception);
+                return await Database.InsertAsync(item);
             }
-            return newId;
         }
     }
 }

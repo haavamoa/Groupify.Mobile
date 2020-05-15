@@ -1,5 +1,7 @@
-﻿using DIPS.Xamarin.UI;
+﻿using System;
+using DIPS.Xamarin.UI;
 using Groupify.Mobile.Abstractions;
+using Groupify.Mobile.Services;
 using LightInject;
 using Xamarin.Forms;
 
@@ -21,27 +23,28 @@ namespace Groupify.Mobile
             MainPage = new BackdropPage(NavigationService);
         }
 
-        protected override async void OnStart()
-        {
-            await m_container.GetInstance<IDeviceDataBase>().Initialize(exception =>
-            {
-                MainPage = new ContentPage()
-                {
-                    Content = new Label() { Text = exception.Message }
-                };
-            });
-            await NavigationService.Initialize();
-        }
-
         public INavigationService NavigationService { get; }
-
-        protected override void OnSleep()
-        {
-        }
 
         protected override void OnResume()
         {
         }
 
+        protected override void OnSleep()
+        {
+        }
+
+        protected override async void OnStart()
+        {
+            try
+            {
+                await m_container.GetInstance<IDeviceDataBase>().Initialize();
+                await NavigationService.Initialize();
+            }
+            catch (Exception exception)
+            {
+
+                m_container.GetInstance<ILogService>().Log(exception);
+            }
+        }
     }
 }

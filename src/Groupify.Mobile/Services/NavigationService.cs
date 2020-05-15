@@ -42,7 +42,7 @@ namespace Groupify.Mobile.Services
             m_lookup.Add(typeof(IndividualSelectorViewModel), () => new IndividualSelectorView());
         }
 
-        public async Task Pop()
+        public async Task GoBack()
         {
             Stack.Pop();
             PropertyChanged.Raise(nameof(Stack));
@@ -77,25 +77,46 @@ namespace Groupify.Mobile.Services
         {
             try
             {
-                var config = new ViewModelConfiguration();
-                viewmodel.Setup(config);
+                var config = GetViewModelConfig(viewmodel);
 
                 Stack.Push(view);
                 PropertyChanged.Raise(nameof(Stack));
                 view.BindingContext = viewmodel;
                 beforeNavigation?.Invoke(viewmodel);
 
-                if(config.InitializeMethod != null)
+                if (config.InitializeMethod != null)
                 {
                     _ = config.InitializeMethod();
                 }
-                
+
                 await ((BackdropPage)Application.Current.MainPage).SetView(view);
             }
             catch (Exception e)
             {
                 m_logService.Log(e);
             }
+        }
+
+        private static ViewModelConfiguration GetViewModelConfig<TViewModel>(TViewModel viewmodel) where TViewModel : IViewModel
+        {
+            var config = new ViewModelConfiguration();
+            viewmodel.Setup(config);
+            return config;
+        }
+
+        public async Task GoBackAndRefresh()
+        {
+            Stack.Pop();
+            PropertyChanged.Raise(nameof(Stack));
+            var viewmodel = (IViewModel)Stack.Peek().BindingContext;
+
+            var config = GetViewModelConfig(viewmodel);
+            if(config.RefreshingMethod != null)
+            {
+                _ = config.RefreshingMethod();
+            }
+
+            await ((BackdropPage)Application.Current.MainPage).SetView(Stack.Peek());
         }
     }
 }

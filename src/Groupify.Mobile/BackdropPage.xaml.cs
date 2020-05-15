@@ -32,7 +32,7 @@ namespace Groupify.Mobile
 
         private async void OnBackClicked(object sender, EventArgs e)
         {
-            await m_navigationService.Pop();
+            await m_navigationService.GoBack();
         }
 
         public async Task SetView(ContentView view)

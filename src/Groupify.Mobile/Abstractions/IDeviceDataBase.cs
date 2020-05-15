@@ -16,6 +16,6 @@ namespace Groupify.Mobile.Abstractions
         Task<IndividualsGroup> GetIndividualsGroup(int id);
         Task<List<IndividualsGroup>> GetAllIndividualsGroups();
         Task<int> Save(IndividualsGroup group);
-        Task Initialize(Action<Exception> onException);
+        Task Initialize();
     }
 }

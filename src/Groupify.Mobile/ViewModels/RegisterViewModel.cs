@@ -89,7 +89,7 @@ namespace Groupify.Mobile.ViewModels
                     await m_database.Save(new IndividualsGroup() { GroupId = groupid, IndividualId = individualId });
                 }
 
-                await m_navigationService.Pop();
+                await m_navigationService.GoBackAndRefresh();
             }
             catch (Exception exception)
             {
