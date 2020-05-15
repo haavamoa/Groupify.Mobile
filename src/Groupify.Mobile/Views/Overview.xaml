@@ -2,8 +2,8 @@
 <Views:BackdropMainView x:Class="Groupify.Mobile.Views.Overview"
                         xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                        xmlns:ViewModels="clr-namespace:Groupify.Mobile.ViewModels;assembly=Groupify.Mobile"
                         xmlns:Models="clr-namespace:Groupify.Mobile.Models;assembly=Groupify.Mobile"
+                        xmlns:ViewModels="clr-namespace:Groupify.Mobile.ViewModels;assembly=Groupify.Mobile"
                         xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                         xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,31 +16,59 @@
                         mc:Ignorable="d dblend">
     <RefreshView Command="{Binding RefreshCommand}"
                  IsRefreshing="{Binding IsRefreshing}">
-        <ScrollView>
+        <ScrollView x:Name="ScrollView">
             <StackLayout Padding="20,10,40,0"
                          BindableLayout.ItemsSource="{Binding Groups}"
                          Spacing="20">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type Models:Group}">
-                        <Frame BackgroundColor="{StaticResource ThemeDarker}"
-                               CornerRadius="50"
-                               HasShadow="False"
-                               HeightRequest="100"
-                               VerticalOptions="Start"
-                               WidthRequest="40">
-                            <StackLayout HorizontalOptions="Center"
-                                         Spacing="0">
-                                <Label FontAttributes="Bold"
-                                       FontSize="50"
-                                       Text="{Binding Name}"
-                                       TextColor="White" />
-                                <Label Text="{Binding Count, StringFormat='Antall elever: {0}'}"
-                                       TextColor="White" />
-                            </StackLayout>
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:OverviewViewModel}}, Path=NavigateToGroupingCommand}" CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
-                        </Frame>
+                        <SwipeView BackgroundColor="Transparent">
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItemView>
+                                        <Grid>
+                                            <Frame Margin="5"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   BackgroundColor="{StaticResource ThemeNegative}"
+                                                   CornerRadius="50"
+                                                   HasShadow="False">
+                                                <Label HorizontalOptions="Center"
+                                                       Text="Delete"
+                                                       TextColor="White"
+                                                       VerticalOptions="Center" />
+                                            </Frame>
+                                        </Grid>
+                                    </SwipeItemView>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <SwipeView.LeftItems>
+                                <SwipeItems>
+                                    <SwipeItemView />
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <Frame BackgroundColor="{StaticResource ThemeDarker}"
+                                   CornerRadius="50"
+                                   HasShadow="False"
+                                   HeightRequest="100"
+                                   IsClippedToBounds="True"
+                                   VerticalOptions="Start"
+                                   WidthRequest="40">
+                                <StackLayout HorizontalOptions="Center"
+                                             Spacing="0">
+                                    <Label FontAttributes="Bold"
+                                           FontSize="50"
+                                           Text="{Binding Name}"
+                                           TextColor="White" />
+                                    <Label Text="{Binding Count, StringFormat='Antall elever: {0}'}"
+                                           TextColor="White" />
+                                </StackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:OverviewViewModel}}, Path=NavigateToGroupingCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </SwipeView>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </StackLayout>

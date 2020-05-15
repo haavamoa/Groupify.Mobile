@@ -12,6 +12,8 @@ namespace Groupify.Mobile.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Overview
     {
+        private double m_newX;
+
         public Overview()
         {
             InitializeComponent();

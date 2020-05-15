@@ -10,6 +10,7 @@
         <Color x:Key="ThemeDarker">#344955</Color>
         <Color x:Key="ThemeInteract">#F9AA33</Color>
         <Color x:Key="ThemePositive">#33F975</Color>
+        <Color x:Key="ThemeNegative">#D52E2E</Color>
         <Color x:Key="ThemeTextColor">#FFFFFF</Color>
     </Application.Resources>
 </Application>
