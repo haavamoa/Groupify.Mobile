@@ -38,7 +38,7 @@
                                        TextColor="White" />
                             </StackLayout>
                             <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:OverviewViewModel}}, Path=NavigateToGroupingCommand}" />
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:OverviewViewModel}}, Path=NavigateToGroupingCommand}" CommandParameter="{Binding .}" />
                             </Frame.GestureRecognizers>
                         </Frame>
                     </DataTemplate>

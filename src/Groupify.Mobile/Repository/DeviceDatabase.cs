@@ -19,6 +19,8 @@ namespace Groupify.Mobile.Repository
         private static SQLiteAsyncConnection Database => s_lazyInitializer.Value;
 
 
+        public Task<int> Delete(Group group) => Delete<Group>(group);
+
         public Task<List<Group>> GetAllGroups()
         {
             return GetAll<Group>();

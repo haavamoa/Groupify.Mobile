@@ -12,14 +12,21 @@ namespace Groupify.Mobile.ViewModels
 {
     public class OverviewViewModel : IViewModel
     {
+        private readonly INavigationService m_navigationService;
         private readonly IDeviceDataBase m_database;
         private bool m_isRefreshing;
         public OverviewViewModel(INavigationService navigationService, IDeviceDataBase database)
         {
-            NavigateToGroupingCommand = new AsyncCommand(navigationService.Push<IndividualSelectorViewModel>);
+            NavigateToGroupingCommand = new AsyncCommand<Group>(NavigateToGrouping);
             RegisterIndividualsGroupCommand = new AsyncCommand(navigationService.Push<RegisterViewModel>);
             RefreshCommand = new AsyncCommand(Refresh);
+            m_navigationService = navigationService;
             m_database = database;
+        }
+
+        private Task NavigateToGrouping(Group selectedGroup)
+        {
+            return m_navigationService.Push<IndividualSelectorViewModel>(individualSelectorViewModel => individualSelectorViewModel.Prepare(selectedGroup));
         }
 #nullable disable
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,7 +40,7 @@ namespace Groupify.Mobile.ViewModels
             set => PropertyChanged.RaiseWhenSet(ref m_isRefreshing, value);
         }
 
-        public IAsyncCommand NavigateToGroupingCommand { get; }
+        public IAsyncCommand<Group> NavigateToGroupingCommand { get; }
 
         public ICommand RefreshCommand { get; }
 

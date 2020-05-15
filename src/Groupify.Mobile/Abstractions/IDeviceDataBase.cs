@@ -10,6 +10,7 @@ namespace Groupify.Mobile.Abstractions
         Task<Individual> GetIndividual(int id); 
         Task<List<Individual>> GetAllIndividuals();
         Task<int> Save(Individual group);
+        Task<int> Delete(Group group);
         Task<Group> GetGroup(int id);
         Task<List<Group>> GetAllGroups();
         Task<int> Save(Group group);

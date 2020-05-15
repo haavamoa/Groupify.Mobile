@@ -3,13 +3,17 @@
                         xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                         xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
+                        xmlns:ViewModels="clr-namespace:Groupify.Mobile.ViewModels;assembly=Groupify.Mobile"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                        Title="Klasse 7b"
-                        mc:Ignorable="d">
+                        x:DataType="{x:Type ViewModels:IndividualSelectorViewModel}"
+                        xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
+                        mc:Ignorable="d dblend"
+                        dblend:DataContext="{dblend:DesignInstance ViewModels:IndividualSelectorViewModel}"
+                        Title="{Binding Group.Name}">
     <Button Padding="50"
-            Clicked="Button_OnClicked"
+            Command="{Binding DeleteGroupCommand}"
             HorizontalOptions="Center"
-            Text="Click me"
+            Text="Delete Group"
             VerticalOptions="Center" />
 </Views:BackdropMainView>
