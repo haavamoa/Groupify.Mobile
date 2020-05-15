@@ -13,9 +13,11 @@ namespace Groupify.Mobile
 
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<INavigationService>(factory => new NavigationService(factory), new PerContainerLifetime());
+            
+            serviceRegistry.Register<INavigationService>(factory => new NavigationService(factory, factory.GetInstance<ILogService>()), new PerContainerLifetime());
+            serviceRegistry.RegisterServices();
             serviceRegistry.RegisterViewModels();
-            serviceRegistry.Register<IDeviceDataBase>(fact => new DeviceDatabase(), lifetime: new PerContainerLifetime());
+            serviceRegistry.Register<IDeviceDataBase, DeviceDatabase>(new PerContainerLifetime());
         }
     }
 
@@ -29,6 +31,11 @@ namespace Groupify.Mobile
             serviceRegistry.Register<GroupsOverviewViewModel>();
             serviceRegistry.Register<IndividualDetailViewModel>();
             serviceRegistry.Register<IndividualSelectorViewModel>();
+        }
+
+        public static void RegisterServices(this IServiceRegistry serviceRegistry)
+        {
+            serviceRegistry.Register<ILogService, LogService>(new PerContainerLifetime());
         }
     }
 }

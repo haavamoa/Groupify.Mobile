@@ -16,10 +16,12 @@ namespace Groupify.Mobile.Services
     {
         private readonly Dictionary<Type, Func<ContentView>> m_lookup = new Dictionary<Type, Func<ContentView>>();
         private readonly IServiceFactory m_serviceFactory;
+        private readonly ILogService m_logService;
 
-        public NavigationService(IServiceFactory serviceFactory)
+        public NavigationService(IServiceFactory serviceFactory, ILogService logService)
         {
             m_serviceFactory = serviceFactory;
+            m_logService = logService;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -92,10 +94,7 @@ namespace Groupify.Mobile.Services
             }
             catch (Exception e)
             {
-                var stackLayout = new StackLayout();
-                stackLayout.Children.Add(new Label() { Text = e.Message });
-                stackLayout.Children.Add(new Label() { Text = e.StackTrace });
-                Application.Current.MainPage = new ContentPage() { Content = stackLayout };
+                m_logService.Log(e);
             }
         }
     }

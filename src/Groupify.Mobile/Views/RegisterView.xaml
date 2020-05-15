@@ -13,7 +13,35 @@
                         dblend:DataContext="{dblend:DesignInstance ViewModels:RegisterViewModel}"
                         x:DataType="{x:Type ViewModels:RegisterViewModel}"
                         mc:Ignorable="d dblend">
-
+    <Views:BackdropMainView.Resources>
+        <!--#region Testdata-->
+        <!--  Long list to test, to use it: {StaticResource TestData}  -->
+        <x:Array x:Key="TestData"
+                 Type="{x:Type Models:Individual}">
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+            <Models:Individual Name="Ola Nordmann" />
+            <Models:Individual Name="Kari Nordmann" />
+        </x:Array>
+        <!--#endregion-->
+    </Views:BackdropMainView.Resources>
     <Grid Margin="20,20,50,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -35,6 +63,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Label Grid.Row="0"
                    Padding="30,0,0,0"
@@ -52,13 +81,13 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Entry Grid.Column="0"
-                           Keyboard="Text"
                            Margin="-2,0,0,0"
                            FontSize="25"
+                           Keyboard="Text"
                            Placeholder="Elevnavn"
                            ReturnCommand="{Binding AddIndividualCommand}"
                            Text="{Binding NewIndividualName}"
-                           TextColor="White"/>
+                           TextColor="White" />
                     <ImageButton Grid.Column="1"
                                  BackgroundColor="Transparent"
                                  Command="{Binding AddIndividualCommand}"
@@ -68,23 +97,37 @@
                 </Grid>
             </yummy:PancakeView>
             <ScrollView Grid.Row="2"
-                        Margin="0,0,0,15"
                         Padding="10,0"
                         BackgroundColor="{StaticResource ThemeDarker}"
                         VerticalScrollBarVisibility="Never">
                 <StackLayout BindableLayout.ItemsSource="{Binding Individuals}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="{x:Type Models:Individual}">
-                            <Label FontSize="25"
-                                   FontAttributes="Bold"
-                                   Text="{Binding Name}"
-                                   TextColor="White"
+                            <Label FontAttributes="Bold"
+                                   FontSize="25"
                                    LineBreakMode="TailTruncation"
-                                   />
+                                   Text="{Binding Name}"
+                                   TextColor="White" />
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </StackLayout>
             </ScrollView>
+            <Frame Grid.Row="3"
+                   Margin="0,0,0,15"
+                   Padding="10"
+                   BackgroundColor="{StaticResource ThemeDarker}"
+                   HasShadow="False">
+                <Button Padding="50,15"
+                        BackgroundColor="{StaticResource Theme}"
+                        CornerRadius="50"
+                        FontAttributes="Bold"
+                        FontSize="32"
+                        HorizontalOptions="Center"
+                        Text="Ferdig"
+                        TextColor="#2ED566"
+                        VerticalOptions="Center"
+                        Command="{Binding AddIndividualsGroupCommand}"/>
+            </Frame>
         </Grid>
     </Grid>
 </Views:BackdropMainView>

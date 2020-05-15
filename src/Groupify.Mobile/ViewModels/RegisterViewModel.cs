@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using DIPS.Xamarin.UI.Commands;
 using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Models;
+using Groupify.Mobile.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -15,16 +17,16 @@ namespace Groupify.Mobile.ViewModels
     public class RegisterViewModel : IViewModel
     {
         private readonly IDeviceDataBase m_database;
+        private readonly ILogService m_logService;
         private readonly INavigationService m_navigationService;
-#nullable disable
-        private Group m_newGroup = new Group();
+        private readonly Group m_newGroup = new Group();
         private Individual m_newIndividual = new Individual();
-#nullable restore
 
-        public RegisterViewModel(IDeviceDataBase database, INavigationService navigationService)
+        public RegisterViewModel(IDeviceDataBase database, INavigationService navigationService, ILogService logService)
         {
             m_database = database;
             m_navigationService = navigationService;
+            m_logService = logService;
             AddIndividualsGroupCommand = new AsyncCommand(AddIndividualsGroup, () => !string.IsNullOrEmpty(NewGroupName) && Individuals.Count > 0);
             AddIndividualCommand = new Command(AddIndividual, () => !string.IsNullOrEmpty(NewIndividualName));
         }
@@ -35,12 +37,16 @@ namespace Groupify.Mobile.ViewModels
 
         public ICommand AddIndividualCommand { get; }
         public ICommand AddIndividualsGroupCommand { get; }
-        public ObservableCollection<Individual> Individuals { get; } =  new ObservableCollection<Individual>();
+        public ObservableCollection<Individual> Individuals { get; } = new ObservableCollection<Individual>();
 
         public string NewGroupName
         {
             get => m_newGroup.Name;
-            set => m_newGroup.Name = value;
+            set
+            {
+                m_newGroup.Name = value;
+                ((AsyncCommand)AddIndividualsGroupCommand).RaiseCanExecuteChanged();
+            }
         }
         public string NewIndividualName
         {
@@ -53,35 +59,42 @@ namespace Groupify.Mobile.ViewModels
             }
         }
 
-        public void Setup(ViewModelConfiguration configuration){}
+        public void Setup(ViewModelConfiguration configuration) { }
 
         private void AddIndividual()
         {
             Individuals.Add(m_newIndividual);
             m_newIndividual = new Individual();
             NewIndividualName = string.Empty;
-            ((Command)AddIndividualCommand).ChangeCanExecute();
+            ((AsyncCommand)AddIndividualsGroupCommand).RaiseCanExecuteChanged();
         }
 
         private async Task AddIndividualsGroup()
         {
-            m_newGroup.Count = Individuals.Count;
-
-
-            //Save all individuals
-            var individualIds = new List<int>();
-            Individuals.ForEach(async individual => individualIds.Add(await m_database.Save(individual)));
-
-            //Save group
-            var groupid = await m_database.Save(m_newGroup);
-
-            //Save individuals + groups to individualsgroup, remember count
-            foreach (var individualId in individualIds)
+            try
             {
-                await m_database.Save(new IndividualsGroup() { GroupId = groupid, IndividualId = individualId });
-            }
+                m_newGroup.Count = Individuals.Count;
 
-            await m_navigationService.Pop();
+
+                //Save all individuals
+                var individualIds = new List<int>();
+                Individuals.ForEach(async individual => individualIds.Add(await m_database.Save(individual)));
+
+                //Save group
+                var groupid = await m_database.Save(m_newGroup);
+
+                //Save individuals + groups to individualsgroup, remember count
+                foreach (var individualId in individualIds)
+                {
+                    await m_database.Save(new IndividualsGroup() { GroupId = groupid, IndividualId = individualId });
+                }
+
+                await m_navigationService.Pop();
+            }
+            catch (Exception exception)
+            {
+                m_logService.Log(exception);
+            }
         }
     }
 }

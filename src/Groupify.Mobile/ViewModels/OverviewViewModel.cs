@@ -28,7 +28,7 @@ namespace Groupify.Mobile.ViewModels
 
         public async Task Initialize()
         {
-            var items = m_database.GetAllGroups();
+            var items = await m_database.GetAllGroups();
         }
 
 
