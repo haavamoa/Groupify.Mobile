@@ -8,15 +8,14 @@ namespace Groupify.Mobile.Abstractions
     public interface IDeviceDataBase
     {
         Task<Individual> GetIndividual(int id); 
-        Task<List<Individual>> GetAllIndividuals();
-        Task<int> Save(Individual group);
-        Task<int> Delete(Group group);
+        Task Save(Individual group);
+        Task Delete(Group group);
+        Task Delete(Individual individual);
         Task<Group> GetGroup(int id);
         Task<List<Group>> GetAllGroups();
-        Task<int> Save(Group group);
-        Task<IndividualsGroup> GetIndividualsGroup(int id);
-        Task<List<IndividualsGroup>> GetAllIndividualsGroups();
-        Task<int> Save(IndividualsGroup group);
+        Task Save(Group group);
         Task Initialize();
+        Task DeleteAllIndividualGroups(Group group);
+        Task<List<Individual>> GetAllIndividuals();
     }
 }

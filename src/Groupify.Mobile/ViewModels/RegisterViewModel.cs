@@ -75,19 +75,15 @@ namespace Groupify.Mobile.ViewModels
             {
                 m_newGroup.Count = Individuals.Count;
 
+                //Save group
+                await m_database.Save(m_newGroup);
 
                 //Save all individuals
-                var individualIds = new List<int>();
-                Individuals.ForEach(async individual => individualIds.Add(await m_database.Save(individual)));
-
-                //Save group
-                var groupid = await m_database.Save(m_newGroup);
-
-                //Save individuals + groups to individualsgroup, remember count
-                foreach (var individualId in individualIds)
+                Individuals.ForEach(async individual =>
                 {
-                    await m_database.Save(new IndividualsGroup() { GroupId = groupid, IndividualId = individualId });
-                }
+                    individual.GroupId = m_newGroup.Id;
+                    await m_database.Save(individual);
+                });
 
                 await m_navigationService.GoBackAndRefresh();
             }

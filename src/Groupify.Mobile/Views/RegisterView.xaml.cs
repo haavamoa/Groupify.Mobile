@@ -16,5 +16,10 @@ namespace Groupify.Mobile.Views
         {
             InitializeComponent();
         }
+
+        private void FocusIndividualNameEntry(object sender, EventArgs e)
+        {
+            IndividualNameEntry.Focus();
+        }
     }
 }

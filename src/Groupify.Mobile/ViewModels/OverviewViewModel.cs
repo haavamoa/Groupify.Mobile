@@ -7,30 +7,34 @@ using DIPS.Xamarin.UI.Commands;
 using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Models;
+using Groupify.Mobile.Services;
 
 namespace Groupify.Mobile.ViewModels
 {
     public class OverviewViewModel : IViewModel
     {
-        private readonly INavigationService m_navigationService;
         private readonly IDeviceDataBase m_database;
+        private readonly ILogService m_logService;
+        private readonly INavigationService m_navigationService;
         private bool m_isRefreshing;
-        public OverviewViewModel(INavigationService navigationService, IDeviceDataBase database)
+        public OverviewViewModel(INavigationService navigationService, IDeviceDataBase database, ILogService logService)
         {
             NavigateToGroupingCommand = new AsyncCommand<Group>(NavigateToGrouping);
             RegisterIndividualsGroupCommand = new AsyncCommand(navigationService.Push<RegisterViewModel>);
             RefreshCommand = new AsyncCommand(Refresh);
+            DeleteCommand = new AsyncCommand<Group>(Delete);
+            EditCommand = new AsyncCommand<Group>(NavigateToEditGroup);
+
             m_navigationService = navigationService;
             m_database = database;
+            m_logService = logService;
         }
 
-        private Task NavigateToGrouping(Group selectedGroup)
-        {
-            return m_navigationService.Push<IndividualSelectorViewModel>(individualSelectorViewModel => individualSelectorViewModel.Prepare(selectedGroup));
-        }
-#nullable disable
         public event PropertyChangedEventHandler PropertyChanged;
-#nullable restore
+
+        public IAsyncCommand<Group> DeleteCommand { get; }
+
+        public IAsyncCommand<Group> EditCommand { get; }
 
         public ObservableCollection<Group> Groups { get; } = new ObservableCollection<Group>();
 
@@ -48,8 +52,24 @@ namespace Groupify.Mobile.ViewModels
 
         public async Task Initialize()
         {
-            var groups = await m_database.GetAllGroups();
-            groups.ForEach(g => Groups.Add(g));
+            try
+            {
+                await GetAllFromDatabase(); //Use this to debug
+
+                var groups = await m_database.GetAllGroups();
+                groups.ForEach(g => Groups.Add(g));
+            }
+            catch (Exception exception)
+            {
+
+                m_logService.Log(exception);
+            }
+        }
+
+        private async Task GetAllFromDatabase()
+        {
+            var allIndividuals = await m_database.GetAllIndividuals();
+            var allGroups = await m_database.GetAllGroups();
         }
 
         public void Setup(ViewModelConfiguration configuration)
@@ -62,12 +82,42 @@ namespace Groupify.Mobile.ViewModels
             };
         }
 
+
+        private async Task Delete(Group groupToDelete)
+        {
+            try
+            {
+                await m_database.DeleteAllIndividualGroups(groupToDelete);
+                Groups.Remove(groupToDelete);
+            }
+            catch (Exception exception)
+            {
+                m_logService.Log(exception);
+            }
+        }
+
+        private Task NavigateToEditGroup(Group groupToEdit)
+        {
+            return Task.CompletedTask;
+        }
+        private Task NavigateToGrouping(Group selectedGroup)
+        {
+            return m_navigationService.Push<IndividualSelectorViewModel>(individualSelectorViewModel => individualSelectorViewModel.Prepare(selectedGroup));
+        }
+
         private async Task Refresh()
         {
-            var groups = await m_database.GetAllGroups();
-            Groups.Clear();
-            groups.ForEach(g => Groups.Add(g));
-            IsRefreshing = false;
+            try
+            {
+                var groups = await m_database.GetAllGroups();
+                Groups.Clear();
+                groups.ForEach(g => Groups.Add(g));
+                IsRefreshing = false;
+            }
+            catch (Exception exception)
+            {
+                m_logService.Log(exception);
+            }
         }
     }
 }

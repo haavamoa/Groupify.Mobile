@@ -18,8 +18,14 @@ namespace Groupify.Mobile.Repository
 
         private static SQLiteAsyncConnection Database => s_lazyInitializer.Value;
 
+        public async Task DeleteAllIndividualGroups(Group group)
+        {
+            var individualsInGroup = await Database.Table<Individual>().Where(i => i.GroupId == group.Id).ToListAsync();
+            individualsInGroup.ForEach(async individualInGroup => await Database.Table<Individual>().DeleteAsync(individual => individual.Id == individualInGroup.Id));
+            await Delete(group);
+        }
 
-        public Task<int> Delete(Group group) => Delete<Group>(group);
+        public Task Delete(Group group) => Delete<Group>(group);
 
         public Task<List<Group>> GetAllGroups()
         {
@@ -29,11 +35,6 @@ namespace Groupify.Mobile.Repository
         public Task<List<Individual>> GetAllIndividuals()
         {
             return GetAll<Individual>();
-        }
-
-        public Task<List<IndividualsGroup>> GetAllIndividualsGroups()
-        {
-            return GetAll<IndividualsGroup>();
         }
 
         public Task<Group> GetGroup(int id)
@@ -46,15 +47,10 @@ namespace Groupify.Mobile.Repository
             return Get<Individual>(g => g.Id == id);
         }
 
-        public Task<IndividualsGroup> GetIndividualsGroup(int id)
-        {
-            return Get<IndividualsGroup>(ig => ig.Id == id);
-        }
-
         public async Task Initialize()
         {
             var tasks = new List<Task>();
-            if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(IndividualsGroup).Name))
+            if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Individual).Name))
             {
                 tasks.Add(Database.CreateTablesAsync(CreateFlags.None, typeof(Individual)));
             }
@@ -62,31 +58,22 @@ namespace Groupify.Mobile.Repository
             {
                 tasks.Add(Database.CreateTablesAsync(CreateFlags.None, typeof(Group)));
             }
-            if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(IndividualsGroup).Name))
-            {
-                tasks.Add(Database.CreateTablesAsync(CreateFlags.None, typeof(IndividualsGroup)));
-            }
 
             await Task.WhenAll(tasks);
         }
-        public Task<int> Save(Individual individual)
+        public Task Save(Individual individual)
         {
             return Save(individual, individual.Id);
         }
 
-        public Task<int> Save(Group group)
+        public Task Save(Group group)
         {
             return Save(group, group.Id);
         }
 
-        public Task<int> Save(IndividualsGroup group)
+        private Task Delete<T>(T item) where T : new()
         {
-            return Save<IndividualsGroup>(group, group.Id);
-        }
-
-        private async Task<int> Delete<T>(T item) where T : new()
-        {
-            return await Database.DeleteAsync(item);
+            return Database.DeleteAsync(item);
         }
 
         private async Task<T> Get<T>(Expression<Func<T, bool>> expression) where T : new()
@@ -98,16 +85,18 @@ namespace Groupify.Mobile.Repository
         {
             return await Database.Table<T>().ToListAsync();
         }
-        private async Task<int> Save<T>(T item, int id) where T : new()
+        private Task Save<T>(T item, int id) where T : new()
         {
             if (id != 0)
             {
-                return await Database.UpdateAsync(item);
+                return Database.UpdateAsync(item);
             }
             else
             {
-                return await Database.InsertAsync(item);
+                return Database.InsertAsync(item);
             }
         }
+
+        public Task Delete(Individual individual) => Delete<Individual>(individual);
     }
 }

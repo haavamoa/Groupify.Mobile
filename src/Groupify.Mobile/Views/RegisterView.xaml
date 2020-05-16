@@ -54,7 +54,8 @@
             <Entry FontSize="50"
                    Placeholder="Navn"
                    Text="{Binding NewGroupName}"
-                   TextColor="White" />
+                   TextColor="White" 
+                   Completed="FocusIndividualNameEntry"/>
         </yummy:PancakeView>
 
         <Grid Grid.Row="1"
@@ -80,16 +81,19 @@
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Entry Grid.Column="0"
+                    <Entry x:Name="IndividualNameEntry"
+                           Grid.Column="0"
                            Margin="-2,0,0,0"
                            FontSize="25"
                            Keyboard="Text"
                            Placeholder="Elevnavn"
                            ReturnCommand="{Binding AddIndividualCommand}"
+                           Completed="FocusIndividualNameEntry"
                            Text="{Binding NewIndividualName}"
                            TextColor="White" />
                     <ImageButton Grid.Column="1"
                                  BackgroundColor="Transparent"
+                                 Pressed="FocusIndividualNameEntry"
                                  Command="{Binding AddIndividualCommand}"
                                  HeightRequest="20"
                                  Source="Add"
@@ -119,14 +123,14 @@
                    HasShadow="False">
                 <Button Padding="50,15"
                         BackgroundColor="{StaticResource Theme}"
+                        Command="{Binding AddIndividualsGroupCommand}"
                         CornerRadius="50"
                         FontAttributes="Bold"
                         FontSize="32"
                         HorizontalOptions="Center"
                         Text="Ferdig"
                         TextColor="#2ED566"
-                        VerticalOptions="Center"
-                        Command="{Binding AddIndividualsGroupCommand}"/>
+                        VerticalOptions="Center" />
             </Frame>
         </Grid>
     </Grid>
