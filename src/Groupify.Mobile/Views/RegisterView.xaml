@@ -51,11 +51,12 @@
                            Padding="10"
                            BackgroundColor="{StaticResource ThemeDarker}"
                            CornerRadius="30,0,0,0">
-            <Entry FontSize="50"
-                   Placeholder="Navn"
+            <Entry x:Name="NewGroupNameEntry"
+                   Completed="FocusIndividualNameEntry"
+                   FontSize="50"
+                   Placeholder="Klasse"
                    Text="{Binding NewGroupName}"
-                   TextColor="White" 
-                   Completed="FocusIndividualNameEntry"/>
+                   TextColor="White" />
         </yummy:PancakeView>
 
         <Grid Grid.Row="1"
@@ -66,7 +67,8 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Label Grid.Row="0"
+            <Label x:Name="IndividualsCountLabel"
+                   Grid.Row="0"
                    Padding="30,0,0,0"
                    FontAttributes="Bold"
                    FontSize="20"
@@ -84,18 +86,18 @@
                     <Entry x:Name="IndividualNameEntry"
                            Grid.Column="0"
                            Margin="-2,0,0,0"
+                           Completed="FocusIndividualNameEntry"
                            FontSize="25"
                            Keyboard="Text"
                            Placeholder="Elevnavn"
                            ReturnCommand="{Binding AddIndividualCommand}"
-                           Completed="FocusIndividualNameEntry"
                            Text="{Binding NewIndividualName}"
                            TextColor="White" />
                     <ImageButton Grid.Column="1"
                                  BackgroundColor="Transparent"
-                                 Pressed="FocusIndividualNameEntry"
                                  Command="{Binding AddIndividualCommand}"
                                  HeightRequest="20"
+                                 Pressed="FocusIndividualNameEntry"
                                  Source="Add"
                                  WidthRequest="20" />
                 </Grid>
@@ -123,6 +125,7 @@
                    HasShadow="False">
                 <Button Padding="50,15"
                         BackgroundColor="{StaticResource Theme}"
+                        Clicked="ValidateCriteriaToRegister"
                         Command="{Binding AddIndividualsGroupCommand}"
                         CornerRadius="50"
                         FontAttributes="Bold"

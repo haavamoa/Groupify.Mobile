@@ -27,7 +27,7 @@ namespace Groupify.Mobile.ViewModels
             m_database = database;
             m_navigationService = navigationService;
             m_logService = logService;
-            AddIndividualsGroupCommand = new AsyncCommand(AddIndividualsGroup, () => !string.IsNullOrEmpty(NewGroupName) && Individuals.Count > 0);
+            AddIndividualsGroupCommand = new AsyncCommand(AddIndividualsGroup);
             AddIndividualCommand = new Command(AddIndividual, () => !string.IsNullOrEmpty(NewIndividualName));
         }
 
@@ -45,7 +45,6 @@ namespace Groupify.Mobile.ViewModels
             set
             {
                 m_newGroup.Name = value;
-                ((AsyncCommand)AddIndividualsGroupCommand).RaiseCanExecuteChanged();
             }
         }
         public string NewIndividualName
@@ -66,11 +65,12 @@ namespace Groupify.Mobile.ViewModels
             Individuals.Add(m_newIndividual);
             m_newIndividual = new Individual();
             NewIndividualName = string.Empty;
-            ((AsyncCommand)AddIndividualsGroupCommand).RaiseCanExecuteChanged();
         }
 
         private async Task AddIndividualsGroup()
         {
+            if (string.IsNullOrEmpty(NewGroupName) || Individuals.Count == 0)
+                return;
             try
             {
                 m_newGroup.Count = Individuals.Count;

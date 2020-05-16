@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Groupify.Mobile.Repository;
+using Groupify.Mobile.Extensions;
+using Groupify.Mobile.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -21,5 +19,26 @@ namespace Groupify.Mobile.Views
         {
             IndividualNameEntry.Focus();
         }
+
+        private void ValidateCriteriaToRegister(object sender, EventArgs e)
+        {
+            var vm = ((RegisterViewModel)BindingContext);
+            if (string.IsNullOrEmpty(vm.NewGroupName))
+            {
+                NewGroupNameEntry.Shake();
+                NewGroupNameEntry.Focus();
+            }
+
+            if (vm.Individuals.Count == 0)
+            {
+                IndividualsCountLabel.Shake();
+                if(!string.IsNullOrEmpty(vm.NewGroupName))
+                {
+                    IndividualNameEntry.Focus();
+                }
+            }
+        }
+
+       
     }
 }
