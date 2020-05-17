@@ -7,6 +7,7 @@
                         xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                         xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:dxui="http://dips.xamarin.ui.com"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                         xmlns:pancakeview="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
                         Title="Klasser"
@@ -16,48 +17,50 @@
                         ToolbarItemImageSource="Add"
                         mc:Ignorable="d dblend">
     <RefreshView Command="{Binding RefreshCommand}"
-                 IsRefreshing="{Binding IsRefreshing}">
-        <ScrollView x:Name="ScrollView">
-            <StackLayout Padding="20,10,0,0"
-                         BindableLayout.ItemsSource="{Binding Groups}"
-                         Spacing="20">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="{x:Type Models:Group}">
-                        <SwipeView BackgroundColor="Transparent">
-                            <SwipeView.RightItems>
-                                <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
-                                    <SwipeItem Text="Slett"
-                                               BackgroundColor="{StaticResource ThemeNegative}"
-                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:OverviewViewModel}}, Path=DeleteCommand}"
-                                               CommandParameter="{Binding .}"/>
-                                    <SwipeItem Text="Endre" BackgroundColor="{StaticResource ThemeInteract}"/>
-                                </SwipeItems>
-                            </SwipeView.RightItems>
-                            <pancakeview:PancakeView BackgroundColor="{StaticResource ThemeDarker}"
-                                   CornerRadius="50,0,50,0"
-                                   HasShadow="False"
-                                   HeightRequest="100"
-                                   IsClippedToBounds="True"
-                                   VerticalOptions="Start"
-                                   WidthRequest="40">
-                                <StackLayout HorizontalOptions="Center"
-                                             Spacing="0">
-                                    <Label FontAttributes="Bold"
-                                           FontSize="50"
-                                           Text="{Binding Name}"
-                                           TextColor="White" />
-                                    <Label Text="{Binding Count, StringFormat='Antall elever: {0}'}"
-                                           TextColor="White" />
-                                </StackLayout>
-                                <pancakeview:PancakeView.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:OverviewViewModel}}, Path=NavigateToGroupingCommand}"
-                                                          CommandParameter="{Binding .}" />
-                                </pancakeview:PancakeView.GestureRecognizers>
-                            </pancakeview:PancakeView>
-                        </SwipeView>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </StackLayout>
-        </ScrollView>
-    </RefreshView>
+                     IsRefreshing="{Binding IsRefreshing}">
+            <ScrollView x:Name="ScrollView">
+                <StackLayout Padding="20,10,0,0"
+                             BindableLayout.ItemsSource="{Binding Groups}"
+                             Spacing="20">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="{x:Type Models:Group}">
+                            <SwipeView x:Name="SwipeViewLol"
+                                       BackgroundColor="Transparent">
+                                <SwipeView.RightItems>
+                                    <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
+                                        <SwipeItem BackgroundColor="{StaticResource ThemeNegative}"
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:OverviewViewModel}}, Path=DeleteCommand}"
+                                                   CommandParameter="{Binding .}"
+                                                   Text="Slett" />
+                                        <SwipeItem BackgroundColor="{StaticResource ThemeInteract}"
+                                                   Text="Endre" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <pancakeview:PancakeView BackgroundColor="{StaticResource ThemeDarker}"
+                                                         CornerRadius="50,0,50,0"
+                                                         HasShadow="False"
+                                                         HeightRequest="100"
+                                                         IsClippedToBounds="True"
+                                                         VerticalOptions="Start"
+                                                         WidthRequest="40">
+                                    <StackLayout HorizontalOptions="Center"
+                                                 Spacing="0">
+                                        <Label FontAttributes="Bold"
+                                               FontSize="50"
+                                               Text="{Binding Name}"
+                                               TextColor="White" />
+                                        <Label Text="{Binding Count, StringFormat='Antall elever: {0}'}"
+                                               TextColor="White" />
+                                    </StackLayout>
+                                    <pancakeview:PancakeView.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:OverviewViewModel}}, Path=NavigateToGroupingCommand}"
+                                                              CommandParameter="{Binding .}" />
+                                    </pancakeview:PancakeView.GestureRecognizers>
+                                </pancakeview:PancakeView>
+                            </SwipeView>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+        </RefreshView>
 </Views:BackdropMainView>

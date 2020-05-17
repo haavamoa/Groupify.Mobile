@@ -8,6 +8,7 @@ using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Models;
 using Groupify.Mobile.Services;
+using Xamarin.Forms;
 
 namespace Groupify.Mobile.ViewModels
 {
@@ -85,10 +86,15 @@ namespace Groupify.Mobile.ViewModels
 
         private async Task Delete(Group groupToDelete)
         {
+            
             try
             {
-                await m_database.DeleteAllIndividualGroups(groupToDelete);
-                Groups.Remove(groupToDelete);
+                var shouldRemove = await ((BackdropPage)Application.Current.MainPage).ConfirmDeletion();
+                if(shouldRemove)
+                {
+                    await m_database.DeleteAllIndividualGroups(groupToDelete);
+                    Groups.Remove(groupToDelete);
+                }
             }
             catch (Exception exception)
             {

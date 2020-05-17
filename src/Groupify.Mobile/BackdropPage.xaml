@@ -1,61 +1,107 @@
-﻿<?xml version="1.0"
-      encoding="utf-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Groupify.Mobile.BackdropPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:dxui="http://dips.xamarin.ui.com"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
-             xmlns:dxui="http://dips.xamarin.ui.com"
-             mc:Ignorable="d"
-             x:Class="Groupify.Mobile.BackdropPage"
-             BackgroundColor="{StaticResource ThemeDarker}"
+             x:Name="codeBehind"
              Title="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.Title}"
-             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              ios:Page.UseSafeArea="true"
-             x:Name="codeBehind">
+             BackgroundColor="{StaticResource ThemeDarker}"
+             mc:Ignorable="d">
     <ContentPage.Content>
-        <Grid RowSpacing="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="70" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid x:Name="headerGrid" Grid.Row="0" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <ImageButton x:Name="navigateBackButton"
-                             Source="Back"
-                             BackgroundColor="Transparent"
-                             Padding="20"
-                             Grid.Column="0"
-                             HorizontalOptions="Start"
-                             Clicked="OnBackClicked"
-                             VerticalOptions="Center"
-                             IsVisible="False"
-                             />
-                <Label x:Name="titleLabel"
-                       Grid.Column="0"
-                       Grid.ColumnSpan="2"
-                       Text="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.Title}"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       VerticalTextAlignment="Center"
-                       FontSize="50"
-                       TextColor="White" />
-                <ImageButton x:Name="toolbarItemButton"
-                             Grid.Column="1"
-                             Command="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.ToolbarItemCommand}"
-                             Source="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.ToolbarItemImageSource}"
-                             Padding="20"
-                             BackgroundColor="Transparent"
-                             HorizontalOptions="End"/>
-            </Grid>
+        <Grid>
+            <Grid RowSpacing="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid x:Name="headerGrid"
+                      Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <ImageButton x:Name="navigateBackButton"
+                                 Grid.Column="0"
+                                 Padding="20"
+                                 BackgroundColor="Transparent"
+                                 Clicked="OnBackClicked"
+                                 HorizontalOptions="Start"
+                                 IsVisible="False"
+                                 Source="Back"
+                                 VerticalOptions="Center" />
+                    <Label x:Name="titleLabel"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           FontAttributes="Bold"
+                           FontSize="50"
+                           HorizontalOptions="Center"
+                           Text="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.Title}"
+                           TextColor="White"
+                           VerticalTextAlignment="Center" />
+                    <ImageButton x:Name="toolbarItemButton"
+                                 Grid.Column="1"
+                                 Padding="20"
+                                 BackgroundColor="Transparent"
+                                 Command="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.ToolbarItemCommand}"
+                                 HorizontalOptions="End"
+                                 Source="{Binding Source={x:Reference codeBehind}, Path=BackdropMainView.ToolbarItemImageSource}" />
+                </Grid>
 
-            <yummy:PancakeView x:Name="mainView"
-                               Grid.Row="1"
-                               CornerRadius="60,0,0,0"
-                               BackgroundColor="{StaticResource Theme}" />
+                <yummy:PancakeView x:Name="mainView"
+                                   Grid.Row="1"
+                                   BackgroundColor="{StaticResource Theme}"
+                                   CornerRadius="60,0,0,0" />
+                <BoxView Grid.Row="0"
+                         Grid.RowSpan="2"
+                         x:Name="Overlay"
+                         Opacity="0"
+                         InputTransparent="True"
+                         BackgroundColor="Gray">
+                    <BoxView.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CancelConfirmation">
+                        </TapGestureRecognizer>
+                    </BoxView.GestureRecognizers>
+                </BoxView>
+            </Grid>
+            <!-- This will be visible when the consumers want to use it -->
+            <Frame x:Name="ConfirmationPopupFrame"
+                   BackgroundColor="White"
+                   Padding="40"
+                   CornerRadius="10"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center">
+                <Grid WidthRequest="200"
+                      RowSpacing="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label x:Name="ConfirmationTitleLabel"
+                           Grid.Row="0"
+                           Text="Er du sikker på at du vil slette klassen?"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center" />
+                    <Button Grid.Row="1"
+                            Text="Slett"
+                            x:Name="ConfirmConfirmationButton"
+                            TextColor="White"
+                            CornerRadius="30"
+                            Clicked="ConfirmConfirmation"
+                            BackgroundColor="{StaticResource ThemeDarker}" />
+                    <Button Text="Avbryt"
+                            x:Name="CancelConfirmationButton"
+                            Clicked="CancelConfirmation"
+                            BackgroundColor="{Binding Source={x:Reference ConfirmationPopupFrame}, Path=BackgroundColor}"
+                            Grid.Row="2" />
+                </Grid>
+
+            </Frame>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

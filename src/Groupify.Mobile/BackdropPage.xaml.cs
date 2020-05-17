@@ -13,6 +13,8 @@ namespace Groupify.Mobile
     {
         private readonly INavigationService m_navigationService;
         private BackdropMainView m_backdropMainView;
+        private double m_confirmationPopupFramePosition;
+        private TaskCompletionSource<bool> m_confirmationTaskCompletetionSource;
 
         public BackdropPage(INavigationService navigationService)
         {
@@ -30,14 +32,22 @@ namespace Groupify.Mobile
             }
         }
 
-        private async void OnBackClicked(object sender, EventArgs e)
+        public Task<bool> ConfirmDeletion()
         {
-            await m_navigationService.GoBack();
+            m_confirmationTaskCompletetionSource = new TaskCompletionSource<bool>();
+            ConfirmationPopupFrame.TranslateTo(0, m_confirmationPopupFramePosition, easing: Easing.SinOut);
+            Overlay.FadeTo(0.4);
+            Overlay.InputTransparent = false;
+            return m_confirmationTaskCompletetionSource.Task;
         }
 
         public async Task SetView(ContentView view)
         {
-            if (!(view is BackdropMainView backdropMainView)) throw new Exception($"The view has to be of type {typeof(BackdropMainView)}");
+            if (!(view is BackdropMainView backdropMainView))
+            {
+                throw new Exception($"The view has to be of type {typeof(BackdropMainView)}");
+            }
+
             backdropMainView.Opacity = 0;
             titleLabel.FadeTo(0);
             var previousView = BackdropMainView;
@@ -60,9 +70,41 @@ namespace Groupify.Mobile
             mainView.Content = view;
         }
 
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            RemoveConfirmationPopup();
+        }
+
+        private void AnimateBackButton(BackdropMainView? previousView)
+        {
+            if (previousView == null)
+            {
+                return;
+            }
+
+            if (BackdropMainView == m_navigationService.Stack.Last())
+            {
+                navigateBackButton.IsVisible = false;
+                return;
+            }
+
+            navigateBackButton.IsVisible = true;
+            if (previousView == m_navigationService.Stack.Last())
+            {
+                navigateBackButton.Opacity = 0;
+                navigateBackButton.TranslationY = navigateBackButton.TranslationY - 20;
+                navigateBackButton.TranslateTo(0, 0);
+                navigateBackButton.FadeTo(1);
+            }
+        }
+
         private void AnimateToolbarItemButton(BackdropMainView current, BackdropMainView? previous)
         {
-            if (current == null) return;
+            if (current == null)
+            {
+                return;
+            }
 
             if (current.ToolbarItemCommand != null && previous == null)
             {
@@ -72,7 +114,10 @@ namespace Groupify.Mobile
                 toolbarItemButton.FadeTo(1);
             }
 
-            if (current.ToolbarItemCommand != null && previous?.ToolbarItemCommand != null) return;
+            if (current.ToolbarItemCommand != null && previous?.ToolbarItemCommand != null)
+            {
+                return;
+            }
 
             if (current.ToolbarItemCommand != null && previous?.ToolbarItemCommand == null)
             {
@@ -89,6 +134,36 @@ namespace Groupify.Mobile
             }
         }
 
+        private async void CancelConfirmation(object sender, EventArgs e)
+        {
+            await Task.WhenAll(
+                ConfirmationPopupFrame.TranslateTo(0, Height, easing: Easing.SinIn),
+                Overlay.FadeTo(0)
+            );
+            Overlay.InputTransparent = true;
+            m_confirmationTaskCompletetionSource.SetResult(false);
+        }
+
+        private async void ConfirmConfirmation(object sender, EventArgs e)
+        {
+            await Task.WhenAll(
+                ConfirmationPopupFrame.TranslateTo(0, Height, easing: Easing.SinIn),
+                Overlay.FadeTo(0)
+            );
+            Overlay.InputTransparent = true;
+            m_confirmationTaskCompletetionSource.SetResult(true);
+        }
+
+        private async void OnBackClicked(object sender, EventArgs e)
+        {
+            await m_navigationService.GoBack();
+        }
+
+        private void RemoveConfirmationPopup()
+        {
+            m_confirmationPopupFramePosition = ConfirmationPopupFrame.TranslationY;
+            ConfirmationPopupFrame.TranslationY = Height;
+        }
         private bool TryOpenToolbarItem(BackdropMainView view)
         {
             if (view.ToolbarItemCommand != null)
@@ -101,26 +176,6 @@ namespace Groupify.Mobile
             }
 
             return false;
-        }
-
-        private void AnimateBackButton(BackdropMainView? previousView)
-        {
-            if (previousView == null) return;
-
-            if (BackdropMainView == m_navigationService.Stack.Last())
-            {
-                navigateBackButton.IsVisible = false;
-                return;
-            }
-
-            navigateBackButton.IsVisible = true;
-            if (previousView == m_navigationService.Stack.Last())
-            {
-                navigateBackButton.Opacity = 0;
-                navigateBackButton.TranslationY = navigateBackButton.TranslationY - 20;
-                navigateBackButton.TranslateTo(0, 0);
-                navigateBackButton.FadeTo(1);
-            }
         }
     }
 }
