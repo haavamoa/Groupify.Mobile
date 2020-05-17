@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -19,8 +18,16 @@ namespace Groupify.Mobile.ViewModels
         private readonly IDeviceDataBase m_database;
         private readonly ILogService m_logService;
         private readonly INavigationService m_navigationService;
-        private readonly Group m_newGroup = new Group();
+        private Group? m_newGroup;
+
+        public bool IsEditing
+        {
+            get => m_isEditing; 
+            private set => PropertyChanged.RaiseWhenSet(ref m_isEditing, value);
+        }
+
         private Individual m_newIndividual = new Individual();
+        private bool m_isEditing;
 
         public RegisterViewModel(IDeviceDataBase database, INavigationService navigationService, ILogService logService)
         {
@@ -31,9 +38,7 @@ namespace Groupify.Mobile.ViewModels
             AddIndividualCommand = new Command(AddIndividual, () => !string.IsNullOrEmpty(NewIndividualName));
         }
 
-#nullable disable
         public event PropertyChangedEventHandler PropertyChanged;
-#nullable restore
 
         public ICommand AddIndividualCommand { get; }
         public ICommand AddIndividualsGroupCommand { get; }
@@ -42,10 +47,7 @@ namespace Groupify.Mobile.ViewModels
         public string NewGroupName
         {
             get => m_newGroup.Name;
-            set
-            {
-                m_newGroup.Name = value;
-            }
+            set => m_newGroup.Name = value;
         }
         public string NewIndividualName
         {
@@ -58,7 +60,30 @@ namespace Groupify.Mobile.ViewModels
             }
         }
 
-        public void Setup(ViewModelConfiguration configuration) { }
+        public void Setup(ViewModelConfiguration configuration)
+        {
+            configuration.InitializeMethod = Initialize;
+        }
+
+        private async Task Initialize()
+        {
+            if (m_newGroup == null)
+            {
+                m_newGroup = new Group();
+            }
+            else
+            {
+                var individuals = await m_database.GetIndividuals(m_newGroup.Id);
+                individuals.ForEach(individual => Individuals.Add(individual));
+                PropertyChanged.Raise(nameof(NewGroupName));
+            }
+        }
+
+        public void PrepareEditingGroup(Group group)
+        {
+            m_newGroup = group;
+            IsEditing = true;
+        }
 
         private void AddIndividual()
         {
@@ -70,7 +95,10 @@ namespace Groupify.Mobile.ViewModels
         private async Task AddIndividualsGroup()
         {
             if (string.IsNullOrEmpty(NewGroupName) || Individuals.Count == 0)
+            {
                 return;
+            }
+
             try
             {
                 m_newGroup.Count = Individuals.Count;

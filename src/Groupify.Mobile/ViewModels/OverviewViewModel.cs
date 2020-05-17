@@ -104,7 +104,7 @@ namespace Groupify.Mobile.ViewModels
 
         private Task NavigateToEditGroup(Group groupToEdit)
         {
-            return Task.CompletedTask;
+            return m_navigationService.Push<RegisterViewModel>(registerviewModel => registerviewModel.PrepareEditingGroup(groupToEdit));
         }
         private Task NavigateToGrouping(Group selectedGroup)
         {

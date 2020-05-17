@@ -13,6 +13,12 @@
                         dblend:DataContext="{dblend:DesignInstance ViewModels:RegisterViewModel}"
                         x:DataType="{x:Type ViewModels:RegisterViewModel}"
                         mc:Ignorable="d dblend">
+    <Views:BackdropMainView.Triggers>
+        <DataTrigger TargetType="Views:BackdropMainView" Binding="{Binding IsEditing}" Value="True">
+            <Setter Property="Title"
+                    Value="Rediger klasse" />
+        </DataTrigger>
+    </Views:BackdropMainView.Triggers>
     <Views:BackdropMainView.Resources>
         <!--#region Testdata-->
         <!--  Long list to test, to use it: {StaticResource TestData}  -->

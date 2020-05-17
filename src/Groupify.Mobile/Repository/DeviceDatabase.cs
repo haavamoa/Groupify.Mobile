@@ -98,5 +98,9 @@ namespace Groupify.Mobile.Repository
         }
 
         public Task Delete(Individual individual) => Delete<Individual>(individual);
+        public Task<List<Individual>> GetIndividuals(int groupId)
+        {
+            return Database.Table<Individual>().Where(individual => individual.GroupId == groupId).ToListAsync();
+        }
     }
 }
