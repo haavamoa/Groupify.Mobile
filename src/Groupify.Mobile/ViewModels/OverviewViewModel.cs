@@ -8,6 +8,7 @@ using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Models;
 using Groupify.Mobile.Services;
+using Groupify.Mobile.ViewModels.Grouping;
 using Xamarin.Forms;
 
 namespace Groupify.Mobile.ViewModels
@@ -108,7 +109,7 @@ namespace Groupify.Mobile.ViewModels
         }
         private Task NavigateToGrouping(Group selectedGroup)
         {
-            return m_navigationService.Push<IndividualSelectorViewModel>(individualSelectorViewModel => individualSelectorViewModel.Prepare(selectedGroup));
+            return m_navigationService.Push<GroupingViewModel>(groupingViewModel => groupingViewModel.Prepare(selectedGroup));
         }
 
         private async Task Refresh()

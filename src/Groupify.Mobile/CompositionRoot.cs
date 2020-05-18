@@ -3,6 +3,7 @@ using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Repository;
 using Groupify.Mobile.Services;
 using Groupify.Mobile.ViewModels;
+using Groupify.Mobile.ViewModels.Grouping;
 using LightInject;
 
 namespace Groupify.Mobile
@@ -27,9 +28,9 @@ namespace Groupify.Mobile
         {
             serviceRegistry.Register<OverviewViewModel>();
             serviceRegistry.Register<RegisterViewModel>();
+            serviceRegistry.Register<GroupingViewModel>();
             serviceRegistry.Register<GroupSelectorViewModel>();
             serviceRegistry.Register<GroupsOverviewViewModel>();
-            serviceRegistry.Register<IndividualDetailViewModel>();
             serviceRegistry.Register<IndividualSelectorViewModel>();
         }
 

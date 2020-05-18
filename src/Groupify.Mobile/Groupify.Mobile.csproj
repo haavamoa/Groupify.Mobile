@@ -36,16 +36,7 @@
     <EmbeddedResource Update="Views\BackdropMainView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\GroupSelectorVIew.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\GroupsOverview.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\IndividualDetailView.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\IndividualSelectorView.xaml">
+    <EmbeddedResource Update="Views\Grouping\GroupingView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Overview.xaml">
@@ -57,12 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\GroupSelectorVIew.xaml.cs">
-      <DependentUpon>GroupSelectorVIew.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\IndividualSelectorView.xaml.cs">
-      <DependentUpon>IndividualSelectorView.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\RegisterView.xaml.cs">
       <DependentUpon>RegisterView.xaml</DependentUpon>
     </Compile>

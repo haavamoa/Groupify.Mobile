@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.ViewModels;
+using Groupify.Mobile.ViewModels.Grouping;
 using Groupify.Mobile.Views;
+using Groupify.Mobile.Views.Grouping;
 using LightInject;
 using Xamarin.Forms;
 
@@ -36,10 +38,7 @@ namespace Groupify.Mobile.Services
 
             m_lookup.Add(typeof(OverviewViewModel), () => overView);
             m_lookup.Add(typeof(RegisterViewModel), () => new RegisterView());
-            m_lookup.Add(typeof(GroupSelectorViewModel), () => new GroupSelectorView());
-            m_lookup.Add(typeof(GroupsOverviewViewModel), () => new GroupsOverview());
-            m_lookup.Add(typeof(IndividualDetailViewModel), () => new IndividualDetailView());
-            m_lookup.Add(typeof(IndividualSelectorViewModel), () => new IndividualSelectorView());
+            m_lookup.Add(typeof(GroupingViewModel), () => new GroupingView());
         }
 
         public async Task GoBack()
