@@ -15,9 +15,7 @@ namespace Groupify.Mobile.ViewModels.Grouping
 
         internal void RandomizeGroup(int numberOfIndividualsInGroup, Group group)
         {
-            var numberOfGroups = (double)group.Count / (double)numberOfIndividualsInGroup;
-            if (numberOfGroups % 1 != 0)
-                return; 
+           
         }
     }
 }

@@ -40,5 +40,18 @@ namespace Groupify.Mobile.Views
             get => (ImageSource)GetValue(ToolbarItemImageSourceProperty);
             set => SetValue(ToolbarItemImageSourceProperty, value);
         }
+
+
+        public bool CanInvokeBackClicked()
+        {
+            return BackClicked?.GetInvocationList().Length > 0;
+        }
+
+        public void InvokeBackClicked()
+        {
+            BackClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler BackClicked;
     }
 }

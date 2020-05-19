@@ -154,9 +154,9 @@ namespace Groupify.Mobile
             m_confirmationTaskCompletetionSource.SetResult(true);
         }
 
-        private async void OnBackClicked(object sender, EventArgs e)
+        private void OnBackClicked(object sender, EventArgs e)
         {
-            await m_navigationService.GoBack();
+            Back();
         }
 
         private void RemoveConfirmationPopup()
@@ -164,18 +164,33 @@ namespace Groupify.Mobile
             m_confirmationPopupFramePosition = ConfirmationPopupFrame.TranslationY;
             ConfirmationPopupFrame.TranslationY = Height;
         }
-        private bool TryOpenToolbarItem(BackdropMainView view)
+
+        protected override bool OnBackButtonPressed()
         {
-            if (view.ToolbarItemCommand != null)
+            return Back();
+        }
+
+        private bool Back()
+        {
+            if (m_navigationService.Stack.Count == 1)
             {
-                toolbarItemButton.Opacity = 0;
-                toolbarItemButton.TranslationY = navigateBackButton.TranslationY - 20;
-                toolbarItemButton.TranslateTo(0, 0);
-                toolbarItemButton.FadeTo(1);
+                if (m_backdropMainView.CanInvokeBackClicked())
+                {
+                    m_backdropMainView.InvokeBackClicked();
+                }
                 return true;
             }
 
-            return false;
+            if (m_backdropMainView.CanInvokeBackClicked())
+            {
+                m_backdropMainView.InvokeBackClicked();
+                return true;
+            }
+            else
+            {
+                m_navigationService.GoBack();
+                return true;
+            }
         }
     }
 }
