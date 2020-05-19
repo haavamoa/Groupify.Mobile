@@ -1,36 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Models;
+using Groupify.Mobile.Services;
 using Groupify.Mobile.ViewModels.Grouping.Abstractions;
-using Xamarin.Forms;
 
 namespace Groupify.Mobile.ViewModels.Grouping
 {
-    public class GroupingViewModel : IViewModel
+    public class GroupingViewModel : IViewModel, IGroupingStateMachine
     {
-        private readonly IndividualSelectorViewModel m_individualSelectorViewModel;
+        private readonly IDeviceDataBase m_deviceDataBase;
         private readonly GroupSelectorViewModel m_groupSelectorViewModel;
         private readonly GroupsOverviewViewModel m_groupsOverviewViewModel;
+        private readonly IndividualSelectorViewModel m_individualSelectorViewModel;
+        private readonly ILogService m_logService;
+        private IGroupingState m_currentState;
+        private int m_numberOfIndividualsInGroup;
 
-        public GroupingViewModel(IndividualSelectorViewModel individualSelectorViewModel, GroupSelectorViewModel groupSelectorViewModel, GroupsOverviewViewModel groupsOverviewViewModel)
+        public GroupingViewModel(IDeviceDataBase deviceDataBase, ILogService logService, IndividualSelectorViewModel individualSelectorViewModel, GroupSelectorViewModel groupSelectorViewModel, GroupsOverviewViewModel groupsOverviewViewModel)
         {
+            m_deviceDataBase = deviceDataBase;
+            m_logService = logService;
             m_individualSelectorViewModel = individualSelectorViewModel;
             m_groupSelectorViewModel = groupSelectorViewModel;
             m_groupsOverviewViewModel = groupsOverviewViewModel;
-            GroupCommand = new Command(() => m_groupSelectorViewModel.RandomizeGroup(NumberOfIndividualsInGroup, Group));
+
         }
 
-        public Group Group{ get; private set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public int NumberOfIndividualsInGroup { get; set; }
+        public IGroupingState CurrentState
+        {
+            get => m_currentState;
+            private set => PropertyChanged.RaiseWhenSet(ref m_currentState, value);
+        }
 
-        public ICommand GroupCommand { get; }
+        public Group Group { get; private set; }
+
+        public int NumberOfIndividualsInGroup
+        {
+            get => m_numberOfIndividualsInGroup;
+            set => PropertyChanged.RaiseWhenSet(ref m_numberOfIndividualsInGroup, value);
+        }
+        public void GoToGroupSelectorState(List<Individual> selectedIndividuals)
+        {
+            m_groupSelectorViewModel.Prepare(selectedIndividuals, NumberOfIndividualsInGroup);
+            CurrentState = m_groupSelectorViewModel;
+        }
+
+        public void GoToGroupsOverViewState()
+        {
+            CurrentState = m_groupsOverviewViewModel;
+        }
+
+        public void GoToIndividualSelectorState()
+        {
+            CurrentState = m_individualSelectorViewModel;
+        }
 
         public void Prepare(Group selectedGroup)
         {
@@ -39,21 +68,21 @@ namespace Groupify.Mobile.ViewModels.Grouping
 
         public void Setup(ViewModelConfiguration configuration) { configuration.InitializeMethod = Initialize; }
 
-        private Task Initialize()
+        private async Task Initialize()
         {
-            CurrentState = m_individualSelectorViewModel;
-            return Task.CompletedTask;
+            try
+            {
+                ((IGroupingState)m_individualSelectorViewModel).Initialize(this);
+                ((IGroupingState)m_groupSelectorViewModel).Initialize(this);
+                ((IGroupingState)m_groupsOverviewViewModel).Initialize(this);
+
+                GoToIndividualSelectorState();
+                m_individualSelectorViewModel.Prepare(await m_deviceDataBase.GetIndividuals(Group.Id));
+            }
+            catch (Exception exception)
+            {
+                m_logService.Log(exception);
+            }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private IGroupState m_currentState;
-
-        public IGroupState CurrentState
-        {
-            get => m_currentState;
-            set => PropertyChanged.RaiseWhenSet(ref m_currentState, value);
-        }
-
     }
 }

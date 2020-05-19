@@ -8,74 +8,99 @@
                         xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                         xmlns:pancakeview="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                        xmlns:converter="clr-namespace:Groupify.Mobile.Resources.Converter"
                         Title="{Binding Group.Name}"
                         dblend:DataContext="{dblend:DesignInstance x:Type GroupingViewModels:GroupingViewModel}"
                         x:DataType="{x:Type GroupingViewModels:GroupingViewModel}"
                         mc:Ignorable="d dblend">
-    <pancakeview:PancakeView Margin="40,30"
-                             Padding="15"
-                             BackgroundColor="{StaticResource ThemeDarker}"
-                             CornerRadius="25"
-                             VerticalOptions="Start">
-        <Grid RowSpacing="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0"
-                  HorizontalOptions="Center"
-                  VerticalOptions="Start">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Label Grid.Column="0"
-                       FontAttributes="Bold"
-                       FontSize="25"
-                       Opacity="0.7"
-                       Text="Antall i hver gruppe : "
-                       TextColor="White"
-                       VerticalOptions="Center" />
-                <Frame Grid.Column="1"
-                       Padding="0"
-                       BackgroundColor="{StaticResource Theme}"
-                       HasShadow="False"
-                       WidthRequest="40">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="NumberOfPeopleInGroupFrameTapped" />
-                    </Frame.GestureRecognizers>
-                    <Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <pancakeview:PancakeView Margin="40,30"
+                                 Padding="15"
+                                 BackgroundColor="{StaticResource ThemeDarker}"
+                                 CornerRadius="25"
+                                 VerticalOptions="Start">
+            <Grid RowSpacing="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0"
+                      HorizontalOptions="Center"
+                      VerticalOptions="Start">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"
+                           FontAttributes="Bold"
+                           FontSize="25"
+                           Opacity="0.7"
+                           Text="Antall i hver gruppe : "
+                           TextColor="White"
+                           VerticalOptions="Center" />
+                    <Frame x:Name="NumberOfIndividualsInGroupFrame"
+                           Grid.Column="1"
+                           Padding="0"
+                           BackgroundColor="{StaticResource Theme}"
+                           HasShadow="False"
+                           WidthRequest="40">
                         <Entry x:Name="NumberOfIndividualsInGroupEntry"
-                               Focused="NumberOfIndividualsInGroupEntry_FocusChanged"
-                               Unfocused="NumberOfIndividualsInGroupEntry_FocusChanged"
-                               Text="{Binding NumberOfIndividualsInGroup}"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
                                Keyboard="Numeric"
-                               Opacity="0"
-                               TextChanged="NumberOfIndividualsInGroupEntry_TextChanged" />
-                        <Label FontAttributes="Bold"
-                               FontSize="15"
-                               HorizontalOptions="Center"
-                               Text="{Binding Source={x:Reference NumberOfIndividualsInGroupEntry}, Path=Text}"
-                               TextColor="White"
-                               VerticalOptions="Center" />
-                        <BoxView HeightRequest="2"
-                                 x:Name="EntryLine"
-                                 VerticalOptions="End"
-                                 Margin="4"
-                                 BackgroundColor="{StaticResource ThemeInteract}" />
-                    </Grid>
-                </Frame>
+                               Text="{Binding NumberOfIndividualsInGroup}"
+                               TextColor="White" />
+                    </Frame>
+                </Grid>
+                <Button Grid.Row="1"
+                        Padding="30,10"
+                        BackgroundColor="{StaticResource Theme}"
+                        Clicked="OnBigButtonPressed"
+                        CornerRadius="30"
+                        FontAttributes="Bold"
+                        FontSize="35"
+                        WidthRequest="250"
+                        HorizontalOptions="Center"
+                        TextColor="{StaticResource ThemeInteract}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}" 
+                                     Value="{x:Type GroupingViewModels:IndividualSelectorViewModel}">
+                            <Setter Property="Text"
+                                    Value="Gruppere" />
+                            <Setter Property="Command"
+                                    Value="{Binding CurrentState.GroupCommand}" />
+                            <Setter Property="CommandParameter"
+                                    Value="{Binding NumberOfIndividualsInGroup}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                                     Value="{x:Type GroupingViewModels:GroupSelectorViewModel}">
+                            <Setter Property="Text"
+                                    Value="Godkjenn" />
+                            <Setter Property="TextColor"
+                                    Value="{StaticResource ThemePositive}" />
+                            <Setter Property="Command"
+                                    Value="{Binding CurrentState.ApproveCommand}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                                     Value="{x:Type GroupingViewModels:GroupSelectorViewModel}">
+                            <Setter Property="Text"
+                                    Value="Ferdig" />
+                            <Setter Property="TextColor"
+                                    Value="{StaticResource ThemePositive}" />
+                            <Setter Property="Command"
+                                    Value="{Binding CurrentState.DoneCommand}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
             </Grid>
-            <Button Grid.Row="1"
-                    Padding="30,10"
-                    BackgroundColor="{StaticResource Theme}"
-                    Command="{Binding GroupCommand}"
-                    CornerRadius="30"
-                    FontAttributes="Bold"
-                    FontSize="35"
-                    HorizontalOptions="Center"
-                    Text="Gruppere"
-                    TextColor="{StaticResource ThemeInteract}" />
-        </Grid>
-    </pancakeview:PancakeView>
+        </pancakeview:PancakeView>
+        <ContentView Grid.Row="1" x:Name="CurrentStateContentView" />
+    </Grid>
 </Views:BackdropMainView> 

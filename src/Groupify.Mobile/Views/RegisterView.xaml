@@ -138,7 +138,7 @@
                         FontSize="32"
                         HorizontalOptions="Center"
                         Text="Ferdig"
-                        TextColor="#2ED566"
+                        TextColor="{StaticResource ThemePositive}"
                         VerticalOptions="Center" />
             </Frame>
         </Grid>

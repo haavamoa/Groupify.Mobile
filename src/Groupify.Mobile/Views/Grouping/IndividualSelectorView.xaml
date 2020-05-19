@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView x:Class="Groupify.Mobile.Views.Grouping.IndividualSelectorView"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:GroupingViewModels="clr-namespace:Groupify.Mobile.ViewModels.Grouping;assembly=Groupify.Mobile"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             dblend:DataContext="{dblend:DesignInstance GroupingViewModels:IndividualSelectorViewModel}"
+             x:DataType="{x:Type GroupingViewModels:IndividualSelectorViewModel}"
+             mc:Ignorable="d dblend">
+
+    <Grid BackgroundColor="{StaticResource ThemeDarker}"
+          RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0"
+              Padding="20,5"
+              BackgroundColor="{StaticResource ThemeDarker}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label FontAttributes="Bold"
+                   FontSize="25"
+                   Text="Utvalg"
+                   TextColor="White" />
+            <CheckBox Grid.Column="1"
+                      IsChecked="{Binding IsAllSelected}" />
+        </Grid>
+        <ScrollView Grid.Row="1"
+                    BackgroundColor="{StaticResource Theme}">
+            <StackLayout Padding="20,5"
+                         BindableLayout.ItemsSource="{Binding SelectableIndividuals}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Type GroupingViewModels:SelectableIndividualViewModel}">
+                        <Grid Padding="0,5">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectCommand}" />
+                            </Grid.GestureRecognizers>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0"
+                                   FontAttributes="Bold"
+                                   FontSize="25"
+                                   Text="{Binding Name}"
+                                   TextColor="White" />
+                            <CheckBox Grid.Column="1"
+                                      IsChecked="{Binding IsSelected}" />
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentView>
