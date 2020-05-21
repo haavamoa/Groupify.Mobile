@@ -6,6 +6,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:components="clr-namespace:Groupify.Mobile.Views.Grouping.Components"
              dblend:DataContext="{dblend:DesignInstance GroupingViewModels:IndividualSelectorViewModel}"
              x:DataType="{x:Type GroupingViewModels:IndividualSelectorViewModel}"
              mc:Ignorable="d dblend">
@@ -19,6 +20,9 @@
         <Grid Grid.Row="0"
               Padding="20,5"
               BackgroundColor="{StaticResource ThemeDarker}">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="ToggleIsAllSelected" />
+            </Grid.GestureRecognizers>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -27,8 +31,10 @@
                    FontSize="25"
                    Text="Utvalg"
                    TextColor="White" />
-            <CheckBox Grid.Column="1"
-                      IsChecked="{Binding IsAllSelected}" />
+            <components:Checkbox Grid.Column="1"
+                                 BackgroundColor="{StaticResource Theme}"
+                                 IsChecked="{Binding IsAllSelected}" 
+                                 InputTransparent="True"/>
         </Grid>
         <ScrollView Grid.Row="1"
                     BackgroundColor="{StaticResource Theme}">
@@ -49,8 +55,11 @@
                                    FontSize="25"
                                    Text="{Binding Name}"
                                    TextColor="White" />
-                            <CheckBox Grid.Column="1"
-                                      IsChecked="{Binding IsSelected}" />
+                            <components:Checkbox 
+                                InputTransparent="True"
+                                Grid.Column="1" 
+                                BackgroundColor="{StaticResource ThemeDarker}"
+                                IsChecked="{Binding IsSelected}" />
                         </Grid>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>

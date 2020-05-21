@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView x:Class="Groupify.Mobile.Views.Grouping.Components.Checkbox"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Name="codeBehind">
+    <Frame x:Name="CheckboxFrame"
+           Grid.Column="1"
+           Padding="0"
+           BackgroundColor="{Binding Source={x:Reference codeBehind}, Path=BackgroundColor}"
+           CornerRadius="50"
+           HasShadow="False"
+           HeightRequest="25"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"
+           WidthRequest="25">
+        <Image x:Name="CheckboxImage"
+               Aspect="AspectFit"
+               HeightRequest="0"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Source="Checkmark"
+               WidthRequest="0" />
+    </Frame>
+</ContentView>

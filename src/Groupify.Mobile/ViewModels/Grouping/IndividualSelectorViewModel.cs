@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Models;
@@ -31,7 +32,7 @@ namespace Groupify.Mobile.ViewModels.Grouping
         }
 
         public ICommand GroupCommand { get; }
-        private bool m_isAllSelected = true;
+        private bool m_isAllSelected;
         private IGroupingStateMachine m_groupingStateMachine;
         private List<Individual> m_originIndividuals;
 
@@ -54,9 +55,11 @@ namespace Groupify.Mobile.ViewModels.Grouping
             individuals.ForEach(individual => SelectableIndividuals.Add(new SelectableIndividualViewModel(individual) { IsSelected = IsAllSelected }));
         }
 
-        public void Initialize(IGroupingStateMachine groupingStateMachine)
+        public async void Initialize(IGroupingStateMachine groupingStateMachine)
         {
             m_groupingStateMachine = groupingStateMachine;
+            await Task.Delay(700);
+            IsAllSelected = true;
         }
     }
 }
