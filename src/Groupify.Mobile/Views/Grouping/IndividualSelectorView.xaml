@@ -3,10 +3,10 @@
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:GroupingViewModels="clr-namespace:Groupify.Mobile.ViewModels.Grouping;assembly=Groupify.Mobile"
+             xmlns:components="clr-namespace:Groupify.Mobile.Views.Grouping.Components"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:components="clr-namespace:Groupify.Mobile.Views.Grouping.Components"
              dblend:DataContext="{dblend:DesignInstance GroupingViewModels:IndividualSelectorViewModel}"
              x:DataType="{x:Type GroupingViewModels:IndividualSelectorViewModel}"
              mc:Ignorable="d dblend">
@@ -27,14 +27,38 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label FontAttributes="Bold"
-                   FontSize="25"
-                   Text="Utvalg"
-                   TextColor="White" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0"
+                       FontAttributes="Bold"
+                       FontSize="25"
+                       Text="Utvalg"
+                       TextColor="White" />
+                <Label x:Name="CounterLabel"
+                       Grid.Column="1"
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       TextColor="White"
+                       VerticalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text=" (" />
+                            <Span Text="{Binding NumberOfSelected}"
+                                  TextColor="{StaticResource ThemeInteract}" />
+                            <Span Text=" / " />
+                            <Span Text="{Binding SelectableIndividuals.Count}" />
+                            <Span Text=") " />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </Grid>
             <components:Checkbox Grid.Column="1"
                                  BackgroundColor="{StaticResource Theme}"
-                                 IsChecked="{Binding IsAllSelected}" 
-                                 InputTransparent="True"/>
+                                 InputTransparent="True"
+                                 IsChecked="{Binding IsAllSelected}" />
         </Grid>
         <ScrollView Grid.Row="1"
                     BackgroundColor="{StaticResource Theme}">
@@ -44,7 +68,7 @@
                     <DataTemplate x:DataType="{x:Type GroupingViewModels:SelectableIndividualViewModel}">
                         <Grid Padding="0,5">
                             <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding SelectCommand}" />
+                                <TapGestureRecognizer Command="{Binding SelectCommand}"/>
                             </Grid.GestureRecognizers>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -55,11 +79,10 @@
                                    FontSize="25"
                                    Text="{Binding Name}"
                                    TextColor="White" />
-                            <components:Checkbox 
-                                InputTransparent="True"
-                                Grid.Column="1" 
-                                BackgroundColor="{StaticResource ThemeDarker}"
-                                IsChecked="{Binding IsSelected}" />
+                            <components:Checkbox Grid.Column="1"
+                                                 BackgroundColor="{StaticResource ThemeDarker}"
+                                                 InputTransparent="True"
+                                                 IsChecked="{Binding IsSelected}" />
                         </Grid>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>

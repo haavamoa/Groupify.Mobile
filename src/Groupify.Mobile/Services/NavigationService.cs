@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Net.WebSockets;
 using System.Threading.Tasks;
 using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
@@ -19,6 +18,7 @@ namespace Groupify.Mobile.Services
         private readonly Dictionary<Type, Func<ContentView>> m_lookup = new Dictionary<Type, Func<ContentView>>();
         private readonly IServiceFactory m_serviceFactory;
         private readonly ILogService m_logService;
+        private bool m_isNavigating;
 
         public NavigationService(IServiceFactory serviceFactory, ILogService logService)
         {
@@ -43,18 +43,26 @@ namespace Groupify.Mobile.Services
 
         public async Task GoBack()
         {
+            if (m_isNavigating)
+                return;
+            m_isNavigating = true;
             Stack.Pop();
             PropertyChanged.Raise(nameof(Stack));
             await ((BackdropPage)Application.Current.MainPage).SetView(Stack.Peek());
+            m_isNavigating = false;
         }
 
         public async Task Push<TViewModel>(Action<TViewModel> beforeNavigation) where TViewModel : IViewModel
         {
+            if (m_isNavigating)
+                return;
+            m_isNavigating = true;
             var viewmodel = m_serviceFactory.GetInstance<TViewModel>();
 
             var view = InternalGetView<TViewModel>();
 
             await InternalPush(viewmodel, view, beforeNavigation);
+            m_isNavigating = false;
         }
 
         public async Task Push<TViewModel>() where TViewModel : IViewModel
@@ -110,7 +118,7 @@ namespace Groupify.Mobile.Services
             var viewmodel = (IViewModel)Stack.Peek().BindingContext;
 
             var config = GetViewModelConfig(viewmodel);
-            if(config.RefreshingMethod != null)
+            if (config.RefreshingMethod != null)
             {
                 _ = config.RefreshingMethod();
             }

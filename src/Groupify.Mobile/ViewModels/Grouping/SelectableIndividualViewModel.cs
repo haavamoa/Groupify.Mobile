@@ -13,9 +13,10 @@ namespace Groupify.Mobile.ViewModels.Grouping
     {
         private bool m_isSelected;
 
-        public SelectableIndividualViewModel(Individual individual)
+        public SelectableIndividualViewModel(Individual individual, Action onSelectionChangedAction)
         {
             m_individual = individual;
+            m_onSelectedCallback = onSelectionChangedAction;
             SelectCommand = new Command(() => IsSelected = !IsSelected);
         }
 
@@ -25,12 +26,17 @@ namespace Groupify.Mobile.ViewModels.Grouping
         public bool IsSelected
         {
             get => m_isSelected;
-            set => PropertyChanged.RaiseWhenSet(ref m_isSelected, value);
+            set
+            {
+                PropertyChanged.RaiseWhenSet(ref m_isSelected, value);
+                m_onSelectedCallback.Invoke();
+            }
         }
 
         public string Name => m_individual.Name;
 
         private Individual m_individual;
+        private readonly Action m_onSelectedCallback;
 
         public Individual GetIndividualModel() => m_individual;
 

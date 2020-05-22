@@ -48,17 +48,21 @@ namespace Groupify.Mobile.ViewModels.Grouping
             }
         }
 
+        public int NumberOfSelected => SelectableIndividuals.Count(selectableIndividualViewModel => selectableIndividualViewModel.IsSelected);
+
         public ObservableCollection<SelectableIndividualViewModel> SelectableIndividuals { get; } = new ObservableCollection<SelectableIndividualViewModel>();
 
         public void Prepare(List<Individual> individuals)
         {
-            individuals.ForEach(individual => SelectableIndividuals.Add(new SelectableIndividualViewModel(individual) { IsSelected = IsAllSelected }));
+            individuals.ForEach(individual => SelectableIndividuals.Add(new SelectableIndividualViewModel(individual, UpdateNumberOfSelected) { IsSelected = IsAllSelected }));
         }
+
+        private void UpdateNumberOfSelected() => PropertyChanged.Raise(nameof(NumberOfSelected));
 
         public async void Initialize(IGroupingStateMachine groupingStateMachine)
         {
             m_groupingStateMachine = groupingStateMachine;
-            await Task.Delay(700);
+            await Task.Delay(600);
             IsAllSelected = true;
         }
     }
