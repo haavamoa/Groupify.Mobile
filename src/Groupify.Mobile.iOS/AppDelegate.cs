@@ -23,7 +23,7 @@ namespace Groupify.Mobile.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            Forms.SetFlags("SwipeView_Experimental");
+            Forms.SetFlags("SwipeView_Experimental", "Markup_Experimental");
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 

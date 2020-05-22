@@ -18,16 +18,10 @@ namespace Groupify.Mobile.ViewModels
         private readonly IDeviceDataBase m_database;
         private readonly ILogService m_logService;
         private readonly INavigationService m_navigationService;
+        private bool m_isEditing;
         private Group? m_newGroup;
 
-        public bool IsEditing
-        {
-            get => m_isEditing; 
-            private set => PropertyChanged.RaiseWhenSet(ref m_isEditing, value);
-        }
-
         private Individual m_newIndividual = new Individual();
-        private bool m_isEditing;
 
         public RegisterViewModel(IDeviceDataBase database, INavigationService navigationService, ILogService logService)
         {
@@ -36,19 +30,28 @@ namespace Groupify.Mobile.ViewModels
             m_logService = logService;
             AddIndividualsGroupCommand = new AsyncCommand(AddIndividualsGroup);
             AddIndividualCommand = new Command(AddIndividual, () => !string.IsNullOrEmpty(NewIndividualName));
+            RemoveIndividualCommand = new AsyncCommand<Individual>(RemoveIndividual);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand AddIndividualCommand { get; }
+
         public ICommand AddIndividualsGroupCommand { get; }
+
         public ObservableCollection<Individual> Individuals { get; } = new ObservableCollection<Individual>();
 
+        public bool IsEditing
+        {
+            get => m_isEditing;
+            private set => PropertyChanged.RaiseWhenSet(ref m_isEditing, value);
+        }
         public string NewGroupName
         {
             get => m_newGroup.Name;
             set => m_newGroup.Name = value;
         }
+
         public string NewIndividualName
         {
             get => m_newIndividual.Name;
@@ -60,29 +63,17 @@ namespace Groupify.Mobile.ViewModels
             }
         }
 
-        public void Setup(ViewModelConfiguration configuration)
-        {
-            configuration.InitializeMethod = Initialize;
-        }
-
-        private async Task Initialize()
-        {
-            if (m_newGroup == null)
-            {
-                m_newGroup = new Group();
-            }
-            else
-            {
-                var individuals = await m_database.GetIndividuals(m_newGroup.Id);
-                individuals.ForEach(individual => Individuals.Add(individual));
-                PropertyChanged.Raise(nameof(NewGroupName));
-            }
-        }
+        public IAsyncCommand<Individual> RemoveIndividualCommand { get; }
 
         public void PrepareEditingGroup(Group group)
         {
             m_newGroup = group;
             IsEditing = true;
+        }
+
+        public void Setup(ViewModelConfiguration configuration)
+        {
+            configuration.InitializeMethod = Initialize;
         }
 
         private void AddIndividual()
@@ -119,6 +110,25 @@ namespace Groupify.Mobile.ViewModels
             {
                 m_logService.Log(exception);
             }
+        }
+
+        private async Task Initialize()
+        {
+            if (m_newGroup == null)
+            {
+                m_newGroup = new Group();
+            }
+            else
+            {
+                var individuals = await m_database.GetIndividuals(m_newGroup.Id);
+                individuals.ForEach(individual => Individuals.Add(individual));
+                PropertyChanged.Raise(nameof(NewGroupName));
+            }
+        }
+
+        private async Task RemoveIndividual(Individual individual)
+        {
+            Individuals.Remove(individual);
         }
     }
 }

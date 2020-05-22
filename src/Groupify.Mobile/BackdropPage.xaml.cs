@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DIPS.Xamarin.UI.Controls.Popup;
+using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Views;
 using Xamarin.Forms;
+using Xamarin.Forms.Markup;
 using Xamarin.Forms.Xaml;
 
 namespace Groupify.Mobile
@@ -32,6 +35,26 @@ namespace Groupify.Mobile
             }
         }
 
+
+
+        public string ConfirmTitle
+        {
+            get => (string)GetValue(ConfirmTitleProperty);
+            set => SetValue(ConfirmTitleProperty, value);
+        }
+
+        public static readonly BindableProperty ConfirmTitleProperty = BindableProperty.Create(nameof(ConfirmTitle), typeof(string), typeof(BackdropPage));
+
+
+
+        public string ConfirmMessage
+        {
+            get => (string)GetValue(ConfirmMessageProperty);
+            set => SetValue(ConfirmMessageProperty, value);
+        }
+
+        public static readonly BindableProperty ConfirmMessageProperty = BindableProperty.Create(nameof(ConfirmMessage), typeof(string), typeof(BackdropPage));
+
         public Task<bool> ConfirmDeletion()
         {
             m_confirmationTaskCompletetionSource = new TaskCompletionSource<bool>();
@@ -40,6 +63,7 @@ namespace Groupify.Mobile
             Overlay.InputTransparent = false;
             return m_confirmationTaskCompletetionSource.Task;
         }
+
 
         public async Task SetView(ContentView view)
         {
