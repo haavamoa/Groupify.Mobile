@@ -11,10 +11,10 @@
              x:DataType="{x:Type GroupingViewModels:GroupSelectorViewModel}"
              mc:Ignorable="d dblend">
     <ScrollView>
-        <StackLayout BindableLayout.ItemsSource="{Binding GroupedGroups}">
+        <StackLayout BindableLayout.ItemsSource="{Binding GroupedGroups}" Spacing="0">
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="{x:Type GroupingViewModels:GroupedIndividuals}">
-                    <Grid>
+                    <Grid RowSpacing="0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition />
@@ -23,18 +23,79 @@
                                BackgroundColor="{StaticResource ThemeDarker}"
                                TextColor="White"
                                Padding="10,5,5,5"
-                               FontSize="20"
+                               FontSize="25"
                                FontAttributes="Bold"
                                Text="{Binding Name}" />
                         <StackLayout Grid.Row="1"
-                                     Padding="10,0,0,0"
+                                     Spacing="0"
                                      BindableLayout.ItemsSource="{Binding .}">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="{x:Type Models:Individual}">
-                                    <Label Text="{Binding Name}" TextColor="White" FontAttributes="Bold" FontSize="20" />
+                                <DataTemplate x:DataType="{x:Type GroupingViewModels:MoveableIndividual}">
+                                    <Grid
+                                        >
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="HighlightIndividual"
+                                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type GroupingViewModels:GroupSelectorViewModel}}, Path=HighlightCommand}" 
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding Name}"
+                                               Padding="5,5"
+                                               TextColor="White"
+                                               FontAttributes="Bold"
+                                               FontSize="25" />
+                                        <BoxView BackgroundColor="Yellow"
+                                                 Opacity="0"
+                                                 InputTransparent="True"
+                                                 Grid.Column="0"
+                                                 Grid.ColumnSpan="2">
+                                            <BoxView.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type GroupingViewModels:GroupSelectorViewModel}}, Path=CancelMovementCommand}" />
+                                            </BoxView.GestureRecognizers>
+                                            <BoxView.Triggers>
+                                                <DataTrigger TargetType="BoxView"
+                                                             Binding="{Binding IsHighligted}"
+                                                             Value="True">
+                                                    <Setter Property="Opacity"
+                                                            Value="0.2" />
+                                                    <Setter Property="InputTransparent"
+                                                            Value="False" />
+                                                </DataTrigger>
+                                            </BoxView.Triggers>
+                                        </BoxView>
+                                    </Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </StackLayout>
+                        <BoxView BackgroundColor="{StaticResource ThemePositive}"
+                                 Grid.Row="0"
+                                 Grid.RowSpan="2">
+                            <BoxView.Triggers>
+                                <DataTrigger TargetType="BoxView"
+                                             Binding="{Binding IsHighlighted}"
+                                             Value="True">
+                                    <Setter Property="Opacity"
+                                            Value="0.2" />
+                                    <Setter Property="InputTransparent"
+                                            Value="False" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="BoxView"
+                                                 Binding="{Binding IsHighlighted}"
+                                                 Value="False">
+                                        <Setter Property="Opacity"
+                                                Value="0" />
+                                        <Setter Property="InputTransparent"
+                                                Value="True" />
+                                    </DataTrigger>
+                            </BoxView.Triggers>
+                            <BoxView.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"
+                                                      Command="{Binding Source={RelativeSource AncestorType={x:Type GroupingViewModels:GroupSelectorViewModel}}, Path=MoveIndividualCommand}" CommandParameter="{Binding .}"/>
+                            </BoxView.GestureRecognizers>
+                        </BoxView>
                     </Grid>
                 </DataTemplate>
             </BindableLayout.ItemTemplate>

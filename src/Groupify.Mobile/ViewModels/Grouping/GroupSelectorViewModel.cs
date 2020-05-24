@@ -19,7 +19,7 @@ namespace Groupify.Mobile.ViewModels.Grouping
     {
         private IGroupingStateMachine m_groupingStateMachine;
         private List<Individual> m_selectedIndividuals;
-        private ObservableCollection<GroupedIndividuals> m_groupedGroups;
+        private MoveableIndividual m_highLightedIndividual;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -40,22 +40,48 @@ namespace Groupify.Mobile.ViewModels.Grouping
             {
                 m_groupingStateMachine.GoToIndividualSelectorState();
             });
+
+            HighlightCommand = new Command<MoveableIndividual>(individual =>
+             {
+                 m_highLightedIndividual = individual;
+                 m_highLightedIndividual.IsHighligted = true;
+                 var groupsToHighlight = GroupedGroups.Where(groupedIndividuals => !groupedIndividuals.Contains(individual));
+                 groupsToHighlight.ForEach(g => g.IsHighlighted = true);
+             });
+
+            CancelMovementCommand = new Command(() =>
+            {
+                GroupedGroups.ForEach(g => g.IsHighlighted = false);
+                m_highLightedIndividual.IsHighligted = false;
+                m_highLightedIndividual = null;
+            });
+
+            MoveIndividualCommand = new Command<GroupedIndividuals>(ig =>
+            {
+                var group = GroupedGroups.First(groupedIndividuals => groupedIndividuals.Contains(m_highLightedIndividual));
+                group.Remove(m_highLightedIndividual);
+                ig.Add(m_highLightedIndividual);
+                CancelMovementCommand.Execute(null);
+            });
         }
+
+        public ICommand HighlightCommand { get; }
+        public ICommand CancelMovementCommand { get; }
+        public ICommand MoveIndividualCommand { get; }
 
         private void Group(int numberOfIndividualsInGroup)
         {
             m_selectedIndividuals.Shuffle();
             var shuffledListOfGroups = m_selectedIndividuals.ChunkBy(numberOfIndividualsInGroup);
             shuffledListOfGroups.Shuffle();
-            var listOfGroupedGroups = new ObservableCollection<GroupedIndividuals>();
             GroupedGroups.Clear();
             foreach (var group in shuffledListOfGroups)
             {
                 var groupedIndividuals = new GroupedIndividuals($"Gruppe {shuffledListOfGroups.IndexOf(group) + 1}");
-                
-                foreach(var individual in group)
+
+                foreach (var individual in group)
                 {
-                    groupedIndividuals.Add(individual);
+                    groupedIndividuals.Add(new MoveableIndividual(individual));
                 }
                 GroupedGroups.Add(groupedIndividuals);
             }
