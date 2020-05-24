@@ -3,6 +3,7 @@
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:GroupingViewModels="clr-namespace:Groupify.Mobile.ViewModels.Grouping;assembly=Groupify.Mobile"
+             xmlns:Models="clr-namespace:Groupify.Mobile.Models;assembly=Groupify.Mobile"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -29,7 +30,7 @@
                                      Padding="10,0,0,0"
                                      BindableLayout.ItemsSource="{Binding .}">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="{x:Type Models:Individual}">
                                     <Label Text="{Binding Name}" TextColor="White" FontAttributes="Bold" FontSize="20" />
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>

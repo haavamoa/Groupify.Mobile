@@ -11,6 +11,7 @@ using Groupify.Mobile.Extensions;
 using Groupify.Mobile.Models;
 using Groupify.Mobile.ViewModels.Grouping.Abstractions;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace Groupify.Mobile.ViewModels.Grouping
 {
@@ -45,16 +46,22 @@ namespace Groupify.Mobile.ViewModels.Grouping
         {
             m_selectedIndividuals.Shuffle();
             var shuffledListOfGroups = m_selectedIndividuals.ChunkBy(numberOfIndividualsInGroup);
+            shuffledListOfGroups.Shuffle();
             var listOfGroupedGroups = new ObservableCollection<GroupedIndividuals>();
+            GroupedGroups.Clear();
             foreach (var group in shuffledListOfGroups)
             {
-                listOfGroupedGroups.Add(new GroupedIndividuals($"Gruppe {shuffledListOfGroups.IndexOf(group) + 1}", group));
+                var groupedIndividuals = new GroupedIndividuals($"Gruppe {shuffledListOfGroups.IndexOf(group) + 1}");
+                
+                foreach(var individual in group)
+                {
+                    groupedIndividuals.Add(individual);
+                }
+                GroupedGroups.Add(groupedIndividuals);
             }
-            GroupedGroups = listOfGroupedGroups;
-            PropertyChanged.Raise(nameof(GroupedGroups));
         }
 
-        public ObservableCollection<GroupedIndividuals> GroupedGroups { get => m_groupedGroups; set => PropertyChanged.RaiseWhenSet(ref m_groupedGroups, value); }
+        public ObservableCollection<GroupedIndividuals> GroupedGroups { get; } = new ObservableCollection<GroupedIndividuals>();
 
         public ICommand GroupCommand { get; }
 

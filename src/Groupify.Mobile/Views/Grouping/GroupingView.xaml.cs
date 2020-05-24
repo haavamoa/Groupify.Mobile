@@ -54,16 +54,15 @@ namespace Groupify.Mobile.Views.Grouping
 
         private void OnGroupingViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //Cleanup
-            if(m_currentState is GroupSelectorViewModel)
-            {
-                ExtraButtonsGrid.IsVisible = false;
-            }
-
-
-            //Initialize new state
             if(e.PropertyName.Equals(nameof(GroupingViewModel.CurrentState)))
             {
+                //Cleanup
+                if (m_currentState is GroupSelectorViewModel)
+                {
+                    ExtraButtonsGrid.IsVisible = false;
+                }
+
+                //Initialize new state
                 m_currentState = ((GroupingViewModel)BindingContext).CurrentState;
                 
                 if(m_currentState is IndividualSelectorViewModel)

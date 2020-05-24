@@ -7,10 +7,9 @@ namespace Groupify.Mobile.ViewModels.Grouping
 {
     public class GroupedIndividuals : List<Individual>
     {
-        public GroupedIndividuals(string name, List<Individual> individuals)
+        public GroupedIndividuals(string name)
         {
             Name = name;
-            AddRange(individuals);
         }
 
         public string Name { get; }
