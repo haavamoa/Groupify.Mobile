@@ -1,13 +1,42 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView x:Class="Groupify.Mobile.Views.Grouping.GroupSelectorView"
+             xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:GroupingViewModels="clr-namespace:Groupify.Mobile.ViewModels.Grouping;assembly=Groupify.Mobile"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             x:Class="Groupify.Mobile.Views.Grouping.GroupSelectorView">
-  <ContentView.Content>
-      <StackLayout>
-          <Label Text="Hello Xamarin.Forms!" />
-      </StackLayout>
-  </ContentView.Content>
+             dblend:DataContext="{dblend:DesignInstance GroupingViewModels:GroupSelectorViewModel}"
+             x:DataType="{x:Type GroupingViewModels:GroupSelectorViewModel}"
+             mc:Ignorable="d dblend">
+    <ScrollView>
+        <StackLayout BindableLayout.ItemsSource="{Binding GroupedGroups}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type GroupingViewModels:GroupedIndividuals}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0"
+                               BackgroundColor="{StaticResource ThemeDarker}"
+                               TextColor="White"
+                               Padding="10,5,5,5"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               Text="{Binding Name}" />
+                        <StackLayout Grid.Row="1"
+                                     Padding="10,0,0,0"
+                                     BindableLayout.ItemsSource="{Binding .}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Text="{Binding Name}" TextColor="White" FontAttributes="Bold" FontSize="20" />
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </Grid>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </StackLayout>
+    </ScrollView>
 </ContentView>

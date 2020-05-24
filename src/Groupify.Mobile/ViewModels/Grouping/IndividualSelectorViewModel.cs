@@ -29,12 +29,12 @@ namespace Groupify.Mobile.ViewModels.Grouping
 
                 m_groupingStateMachine.GoToGroupSelectorState(individualModels);
             });
+
         }
 
         public ICommand GroupCommand { get; }
         private bool m_isAllSelected;
         private IGroupingStateMachine m_groupingStateMachine;
-        private List<Individual> m_originIndividuals;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -4,11 +4,11 @@
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                         xmlns:GroupingViewModels="clr-namespace:Groupify.Mobile.ViewModels.Grouping;assembly=Groupify.Mobile"
                         xmlns:Views="clr-namespace:Groupify.Mobile.Views;assembly=Groupify.Mobile"
+                        xmlns:converter="clr-namespace:Groupify.Mobile.Resources.Converter"
                         xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                         xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                         xmlns:pancakeview="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
-                        xmlns:converter="clr-namespace:Groupify.Mobile.Resources.Converter"
                         Title="{Binding Group.Name}"
                         dblend:DataContext="{dblend:DesignInstance x:Type GroupingViewModels:GroupingViewModel}"
                         x:DataType="{x:Type GroupingViewModels:GroupingViewModel}"
@@ -23,84 +23,123 @@
                                  BackgroundColor="{StaticResource ThemeDarker}"
                                  CornerRadius="25"
                                  VerticalOptions="Start">
-            <Grid RowSpacing="5">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0"
-                      HorizontalOptions="Center"
-                      VerticalOptions="Start">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0"
-                           FontAttributes="Bold"
-                           FontSize="25"
-                           Opacity="0.7"
-                           Text="Antall i hver gruppe : "
-                           TextColor="White"
-                           VerticalOptions="Center" />
-                    <Frame x:Name="NumberOfIndividualsInGroupFrame"
-                           Grid.Column="1"
-                           Padding="0"
-                           BackgroundColor="{StaticResource Theme}"
-                           HasShadow="False"
-                           WidthRequest="40">
-                        <Entry x:Name="NumberOfIndividualsInGroupEntry"
+                <Grid 
+                      Grid.Row="0"
+                      RowSpacing="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Start">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0"
                                FontAttributes="Bold"
-                               HorizontalTextAlignment="Center"
-                               Keyboard="Numeric"
-                               Text="{Binding NumberOfIndividualsInGroup}"
-                               TextColor="White" />
-                    </Frame>
+                               FontSize="25"
+                               Opacity="0.7"
+                               Text="Antall i hver gruppe : "
+                               TextColor="White"
+                               VerticalOptions="Center" />
+                        <Frame x:Name="NumberOfIndividualsInGroupFrame"
+                               Grid.Column="1"
+                               Padding="0"
+                               BackgroundColor="{StaticResource Theme}"
+                               HasShadow="False"
+                               WidthRequest="40">
+                            <Entry x:Name="NumberOfIndividualsInGroupEntry"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center"
+                                   Keyboard="Numeric"
+                                   Text="{Binding NumberOfIndividualsInGroup}"
+                                   TextColor="White" />
+                        </Frame>
+                    </Grid>
+                    <Button Grid.Row="1"
+                            Padding="30,10"
+                            BackgroundColor="{StaticResource Theme}"
+                            Clicked="OnBigButtonPressed"
+                            CornerRadius="30"
+                            FontAttributes="Bold"
+                            FontSize="35"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource ThemeInteract}"
+                            WidthRequest="250">
+                        <!-- Command and CommandParameter is set in code behind -->
+                        <Button.Triggers>
+                            <DataTrigger Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                                         TargetType="Button"
+                                         Value="{x:Type GroupingViewModels:IndividualSelectorViewModel}">
+                                <Setter Property="Text"
+                                        Value="Gruppere" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                                         TargetType="Button"
+                                         Value="{x:Type GroupingViewModels:GroupSelectorViewModel}">
+                                <Setter Property="Text" Value="Godkjenn" />
+                                <Setter Property="TextColor"
+                                        Value="{StaticResource ThemePositive}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                                         TargetType="Button"
+                                         Value="{x:Type GroupingViewModels:GroupsOverviewViewModel}">
+                                <Setter Property="Text" Value="Ferdig" />
+                                <Setter Property="TextColor"
+                                        Value="{StaticResource ThemePositive}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
                 </Grid>
-                <Button Grid.Row="1"
-                        Padding="30,10"
-                        BackgroundColor="{StaticResource Theme}"
-                        Clicked="OnBigButtonPressed"
-                        CornerRadius="30"
-                        FontAttributes="Bold"
-                        FontSize="35"
-                        WidthRequest="250"
-                        HorizontalOptions="Center"
-                        TextColor="{StaticResource ThemeInteract}">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}" 
-                                     Value="{x:Type GroupingViewModels:IndividualSelectorViewModel}">
-                            <Setter Property="Text"
-                                    Value="Gruppere" />
-                            <Setter Property="Command"
-                                    Value="{Binding CurrentState.GroupCommand}" />
-                            <Setter Property="CommandParameter"
-                                    Value="{Binding NumberOfIndividualsInGroup}" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
-                                     Value="{x:Type GroupingViewModels:GroupSelectorViewModel}">
-                            <Setter Property="Text"
-                                    Value="Godkjenn" />
-                            <Setter Property="TextColor"
-                                    Value="{StaticResource ThemePositive}" />
-                            <Setter Property="Command"
-                                    Value="{Binding CurrentState.ApproveCommand}" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
-                                     Value="{x:Type GroupingViewModels:GroupSelectorViewModel}">
-                            <Setter Property="Text"
-                                    Value="Ferdig" />
-                            <Setter Property="TextColor"
-                                    Value="{StaticResource ThemePositive}" />
-                            <Setter Property="Command"
-                                    Value="{Binding CurrentState.DoneCommand}" />
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
+                <Grid x:Name="ExtraButtonsGrid"
+                      Grid.Row="1"
+                      IsVisible="False">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0"
+                            BackgroundColor="{StaticResource Theme}"
+                            CornerRadius="30"
+                            Text="Gruppere"
+                            TextColor="{StaticResource ThemeInteract}"
+                            >
+                        <Button.Triggers>
+                            <DataTrigger Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                                         TargetType="Button"
+                                         Value="{x:Type GroupingViewModels:GroupSelectorViewModel}">
+                                <Setter Property="Command"
+                                        Value="{Binding CurrentState.GroupCommand}" />
+                                <Setter Property="CommandParameter"
+                                        Value="{Binding NumberOfIndividualsInGroup}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Grid.Column="1"
+                            BackgroundColor="{StaticResource Theme}"
+                            CornerRadius="30"
+                            Text="Endre utvalg"
+                            TextColor="{StaticResource ThemeInteract}">
+                        <Button.Triggers>
+                            <DataTrigger Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                                         TargetType="Button"
+                                         Value="{x:Type GroupingViewModels:GroupSelectorViewModel}">
+                                <Setter Property="Command"
+                                        Value="{Binding CurrentState.ChangeSelectionCommand}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
             </Grid>
         </pancakeview:PancakeView>
-        <ContentView Grid.Row="1" x:Name="CurrentStateContentView" />
+        <ContentView x:Name="CurrentStateContentView"
+                     Grid.Row="1" />
     </Grid>
 </Views:BackdropMainView> 

@@ -31,6 +31,19 @@ namespace Groupify.Mobile.Views.Grouping
                     NumberOfIndividualsInGroupEntry.SelectionLength = 1;
                 }
             }
+
+            if(m_currentState is IndividualSelectorViewModel individualSelectorViewModel)
+            {
+                individualSelectorViewModel.GroupCommand.Execute(((GroupingViewModel)BindingContext).NumberOfIndividualsInGroup);
+            }
+            else if(m_currentState is GroupSelectorViewModel groupSelectorViewModel)
+            {
+                groupSelectorViewModel.ApproveCommand.Execute(null);
+            }
+            else if(m_currentState is GroupsOverviewViewModel groupsOverviewViewModel)
+            {
+                groupsOverviewViewModel.DoneCommand.Execute(null);
+            }
         }
 
         protected override void OnBindingContextChanged()
@@ -41,6 +54,14 @@ namespace Groupify.Mobile.Views.Grouping
 
         private void OnGroupingViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            //Cleanup
+            if(m_currentState is GroupSelectorViewModel)
+            {
+                ExtraButtonsGrid.IsVisible = false;
+            }
+
+
+            //Initialize new state
             if(e.PropertyName.Equals(nameof(GroupingViewModel.CurrentState)))
             {
                 m_currentState = ((GroupingViewModel)BindingContext).CurrentState;
@@ -53,6 +74,7 @@ namespace Groupify.Mobile.Views.Grouping
                 if (m_currentState is GroupSelectorViewModel)
                 {
                     CurrentStateContentView.Content = new GroupSelectorView();
+                    ExtraButtonsGrid.IsVisible = true;
                 }
 
                 if (m_currentState is GroupsOverviewViewModel)
