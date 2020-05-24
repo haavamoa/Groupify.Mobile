@@ -84,5 +84,14 @@ namespace Groupify.Mobile.Views.Grouping
                 CurrentStateContentView.Content.BindingContext = m_currentState;
             }
         }
+
+        private async void OnBackClicked(object sender, EventArgs e)
+        {
+            var shouldClose = await ((BackdropPage)App.Current.MainPage).ConfirmClosingGrouping();
+            if(shouldClose)
+            {
+                ((BackdropPage)App.Current.MainPage).GoBack();
+            }
+        }
     }
 }

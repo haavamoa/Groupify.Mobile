@@ -100,7 +100,39 @@
                             BackgroundColor="{Binding Source={x:Reference ConfirmationPopupFrame}, Path=BackgroundColor}"
                             Grid.Row="2" />
                 </Grid>
+            </Frame>
 
+            <Frame x:Name="CloseGroupingConfirmationFrame"
+                   BackgroundColor="White"
+                   Padding="40"
+                   CornerRadius="10"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center">
+                <Grid WidthRequest="200"
+                      RowSpacing="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label x:Name="CloseGroupingConfirmationLabe"
+                           Grid.Row="0"
+                           Text="Er du sikker på at du vil avslutte gruppering?"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center" />
+                    <Button Grid.Row="1"
+                            Text="Avslutt"
+                            x:Name="CloseGroupingConfirmationButton"
+                            TextColor="White"
+                            CornerRadius="30"
+                            Clicked="ConfirmConfirmation"
+                            BackgroundColor="{StaticResource ThemeDarker}" />
+                    <Button Text="Avbryt"
+                            x:Name="CancelCloseGroupingConfirmation"
+                            Clicked="CancelConfirmation"
+                            BackgroundColor="{Binding Source={x:Reference ConfirmationPopupFrame}, Path=BackgroundColor}"
+                            Grid.Row="2" />
+                </Grid>
             </Frame>
         </Grid>
     </ContentPage.Content>

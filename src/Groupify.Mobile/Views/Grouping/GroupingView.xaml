@@ -12,7 +12,8 @@
                         Title="{Binding Group.Name}"
                         dblend:DataContext="{dblend:DesignInstance x:Type GroupingViewModels:GroupingViewModel}"
                         x:DataType="{x:Type GroupingViewModels:GroupingViewModel}"
-                        mc:Ignorable="d dblend">
+                        mc:Ignorable="d dblend"
+                        BackClicked="OnBackClicked">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

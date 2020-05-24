@@ -64,6 +64,15 @@ namespace Groupify.Mobile
             return m_confirmationTaskCompletetionSource.Task;
         }
 
+        public Task<bool> ConfirmClosingGrouping()
+        {
+            m_confirmationTaskCompletetionSource = new TaskCompletionSource<bool>();
+            CloseGroupingConfirmationFrame.TranslateTo(0, m_confirmationPopupFramePosition, easing: Easing.SinOut);
+            Overlay.FadeTo(0.4);
+            Overlay.InputTransparent = false;
+            return m_confirmationTaskCompletetionSource.Task;
+        }
+
 
         public async Task SetView(ContentView view)
         {
@@ -97,7 +106,7 @@ namespace Groupify.Mobile
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            RemoveConfirmationPopup();
+            RemoveConfirmationPopups();
         }
 
         private void AnimateBackButton(BackdropMainView? previousView)
@@ -162,6 +171,7 @@ namespace Groupify.Mobile
         {
             await Task.WhenAll(
                 ConfirmationPopupFrame.TranslateTo(0, Height, easing: Easing.SinIn),
+                CloseGroupingConfirmationFrame.TranslateTo(0, Height, easing: Easing.SinIn),
                 Overlay.FadeTo(0)
             );
             Overlay.InputTransparent = true;
@@ -172,6 +182,7 @@ namespace Groupify.Mobile
         {
             await Task.WhenAll(
                 ConfirmationPopupFrame.TranslateTo(0, Height, easing: Easing.SinIn),
+                CloseGroupingConfirmationFrame.TranslateTo(0, Height, easing: Easing.SinIn),
                 Overlay.FadeTo(0)
             );
             Overlay.InputTransparent = true;
@@ -183,15 +194,21 @@ namespace Groupify.Mobile
             Back();
         }
 
-        private void RemoveConfirmationPopup()
+        private void RemoveConfirmationPopups()
         {
             m_confirmationPopupFramePosition = ConfirmationPopupFrame.TranslationY;
             ConfirmationPopupFrame.TranslationY = Height;
+            CloseGroupingConfirmationFrame.TranslationY = Height;
         }
 
         protected override bool OnBackButtonPressed()
         {
             return Back();
+        }
+
+        public void GoBack()
+        {
+            m_navigationService.GoBack();
         }
 
         private bool Back()
@@ -212,7 +229,7 @@ namespace Groupify.Mobile
             }
             else
             {
-                m_navigationService.GoBack();
+                GoBack();
                 return true;
             }
         }
