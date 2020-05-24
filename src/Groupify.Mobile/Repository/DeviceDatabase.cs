@@ -20,7 +20,8 @@ namespace Groupify.Mobile.Repository
 
         public async Task DeleteAllIndividualGroups(Group group)
         {
-            var individualsInGroup = await Database.Table<Individual>().Where(i => i.GroupId == group.Id).ToListAsync();
+            var individualsInGroup = await Database
+                .Table<Individual>().Where(i => i.GroupId == group.Id).ToListAsync();
             individualsInGroup.ForEach(async individualInGroup => await Database.Table<Individual>().DeleteAsync(individual => individual.Id == individualInGroup.Id));
             await Delete(group);
         }
@@ -57,6 +58,10 @@ namespace Groupify.Mobile.Repository
             if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Group).Name))
             {
                 tasks.Add(Database.CreateTablesAsync(CreateFlags.None, typeof(Group)));
+            }
+            if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(IndividualGroupings).Name))
+            {
+                tasks.Add(Database.CreateTablesAsync(CreateFlags.None, typeof(IndividualGroupings)));
             }
 
             await Task.WhenAll(tasks);
@@ -101,6 +106,13 @@ namespace Groupify.Mobile.Repository
         public Task<List<Individual>> GetIndividuals(int groupId)
         {
             return Database.Table<Individual>().Where(individual => individual.GroupId == groupId).ToListAsync();
+        }
+
+        public Task Save(IndividualGroupings individualGrouping) => Save(individualGrouping);
+        public Task Delete(IndividualGroupings individualGrouping) => Delete(individualGrouping);
+        public Task GetAllIndividualGroupings(Individual individual)
+        {
+            return Database.Table<IndividualGroupings>().Where(individualGrouping => individualGrouping.IndividualId == individual.Id).ToListAsync();
         }
     }
 }
