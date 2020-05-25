@@ -102,7 +102,11 @@ namespace Groupify.Mobile.Repository
             }
         }
 
-        public Task Delete(Individual individual) => Delete<Individual>(individual);
+        public async Task Delete(Individual individual)
+        {
+            await Delete<Individual>(individual);
+            await DeleteIndividualGroupings(individual);
+        }
         public Task<List<Individual>> GetIndividuals(int groupId)
         {
             return Database.Table<Individual>().Where(individual => individual.GroupId == groupId).ToListAsync();
@@ -113,6 +117,11 @@ namespace Groupify.Mobile.Repository
         public Task<List<IndividualGroupings>> GetAllIndividualGroupings(Individual individual)
         {
             return Database.Table<IndividualGroupings>().Where(individualGrouping => individualGrouping.IndividualId == individual.Id).ToListAsync();
+        }
+
+        public Task DeleteIndividualGroupings(Individual individual)
+        {
+            return Database.Table<IndividualGroupings>().Where(ig => ig.IndividualId == individual.Id).ToListAsync();
         }
     }
 }

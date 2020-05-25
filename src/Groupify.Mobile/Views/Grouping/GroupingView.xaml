@@ -37,8 +37,17 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0"
+                          x:Name="Number"
                           HorizontalOptions="Center"
                           VerticalOptions="Start">
+                        <Grid.Triggers>
+                            <DataTrigger Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                                         TargetType="Grid"
+                                         Value="{x:Type GroupingViewModels:GroupsOverviewViewModel}">
+                                <Setter Property="IsVisible"
+                                        Value="False" />
+                            </DataTrigger>
+                        </Grid.Triggers>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />

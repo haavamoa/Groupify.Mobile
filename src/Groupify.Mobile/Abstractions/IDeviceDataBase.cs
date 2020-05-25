@@ -21,5 +21,6 @@ namespace Groupify.Mobile.Abstractions
         Task DeleteAllIndividualGroups(Group group);
         Task<List<Individual>> GetAllIndividuals();
         Task<List<Individual>> GetIndividuals(int id);
+        Task DeleteIndividualGroupings(Individual individual);
     }
 }
