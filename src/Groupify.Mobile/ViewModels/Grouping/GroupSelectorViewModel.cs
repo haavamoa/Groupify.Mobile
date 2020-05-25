@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
-using DIPS.Xamarin.UI.Extensions;
-using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Extensions;
 using Groupify.Mobile.Models;
 using Groupify.Mobile.ViewModels.Grouping.Abstractions;
@@ -18,11 +14,8 @@ namespace Groupify.Mobile.ViewModels.Grouping
     public class GroupSelectorViewModel : IGroupingState
     {
         private IGroupingStateMachine m_groupingStateMachine;
-        private List<Individual> m_selectedIndividuals;
         private MoveableIndividual m_highLightedIndividual;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        private List<Individual> m_selectedIndividuals;
         public GroupSelectorViewModel()
         {
             ApproveCommand = new Command(() =>
@@ -43,6 +36,7 @@ namespace Groupify.Mobile.ViewModels.Grouping
 
             HighlightCommand = new Command<MoveableIndividual>(individual =>
              {
+                 CancelMovementCommand.Execute(null);
                  m_highLightedIndividual = individual;
                  m_highLightedIndividual.IsHighligted = true;
                  var groupsToHighlight = GroupedGroups.Where(groupedIndividuals => !groupedIndividuals.Contains(individual));
@@ -52,7 +46,10 @@ namespace Groupify.Mobile.ViewModels.Grouping
             CancelMovementCommand = new Command(() =>
             {
                 GroupedGroups.ForEach(g => g.IsHighlighted = false);
-                m_highLightedIndividual.IsHighligted = false;
+                if (m_highLightedIndividual != null)
+                {
+                    m_highLightedIndividual.IsHighligted = false;
+                }
                 m_highLightedIndividual = null;
             });
 
@@ -65,9 +62,25 @@ namespace Groupify.Mobile.ViewModels.Grouping
             });
         }
 
-        public ICommand HighlightCommand { get; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        public ICommand ApproveCommand { get; }
         public ICommand CancelMovementCommand { get; }
+        public ICommand ChangeSelectionCommand { get; }
+        public ICommand GroupCommand { get; }
+        public ObservableCollection<GroupedIndividuals> GroupedGroups { get; } = new ObservableCollection<GroupedIndividuals>();
+        public ICommand HighlightCommand { get; }
         public ICommand MoveIndividualCommand { get; }
+
+        public void Initialize(IGroupingStateMachine groupingStateMachine)
+        {
+            m_groupingStateMachine = groupingStateMachine;
+        }
+
+        internal void Prepare(List<Individual> selectedIndividuals, int numberOfIndividualsInGroup)
+        {
+            m_selectedIndividuals = selectedIndividuals;
+            Group(numberOfIndividualsInGroup);
+        }
 
         private void Group(int numberOfIndividualsInGroup)
         {
@@ -86,24 +99,5 @@ namespace Groupify.Mobile.ViewModels.Grouping
                 GroupedGroups.Add(groupedIndividuals);
             }
         }
-
-        public ObservableCollection<GroupedIndividuals> GroupedGroups { get; } = new ObservableCollection<GroupedIndividuals>();
-
-        public ICommand GroupCommand { get; }
-
-        public ICommand ChangeSelectionCommand { get; }
-
-        internal void Prepare(List<Individual> selectedIndividuals, int numberOfIndividualsInGroup)
-        {
-            m_selectedIndividuals = selectedIndividuals;
-            Group(numberOfIndividualsInGroup);
-        }
-
-        public void Initialize(IGroupingStateMachine groupingStateMachine)
-        {
-            m_groupingStateMachine = groupingStateMachine;
-        }
-
-        public ICommand ApproveCommand { get; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Groupify.Mobile.ViewModels
         private Group? m_newGroup;
 
         private Individual m_newIndividual = new Individual();
+        private List<Individual> m_individualsToRemove = new List<Individual>();
 
         public RegisterViewModel(IDeviceDataBase database, INavigationService navigationService, ILogService logService)
         {
@@ -94,6 +96,12 @@ namespace Groupify.Mobile.ViewModels
             {
                 m_newGroup.Count = Individuals.Count;
 
+                //Remove all individuals that are marked to remove
+                foreach (var individual in m_individualsToRemove)
+                {
+                    await m_database.Delete(individual);
+                }
+
                 //Save group
                 await m_database.Save(m_newGroup);
 
@@ -129,6 +137,7 @@ namespace Groupify.Mobile.ViewModels
         private async Task RemoveIndividual(Individual individual)
         {
             Individuals.Remove(individual);
+            m_individualsToRemove.Add(individual);
         }
     }
 }
