@@ -4,11 +4,44 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:GroupingViewModels="clr-namespace:Groupify.Mobile.ViewModels.Grouping;assembly=Groupify.Mobile"
-             mc:Ignorable="d"
-             x:Class="Groupify.Mobile.Views.Grouping.GroupOverviewView">
-  <ContentView.Content>
-      <StackLayout>
-          <Label Text="Hello Xamarin.Forms!" />
-      </StackLayout>
-  </ContentView.Content>
+             mc:Ignorable="d dblend"
+             x:Class="Groupify.Mobile.Views.Grouping.GroupOverviewView"
+             x:DataType="{x:Type GroupingViewModels:GroupsOverviewViewModel}"
+             xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
+             dblend:DataContext="{dblend:DesignInstance GroupingViewModels:GroupsOverviewViewModel}">
+    <ScrollView>
+        <StackLayout BindableLayout.ItemsSource="{Binding GroupedGroups}"
+                     Spacing="0">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type GroupingViewModels:GroupedIndividuals}">
+                    <Grid RowSpacing="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0"
+                               BackgroundColor="{StaticResource ThemeDarker}"
+                               TextColor="White"
+                               Padding="10,5,5,5"
+                               FontSize="25"
+                               FontAttributes="Bold"
+                               Text="{Binding Name}" />
+                        <StackLayout Grid.Row="1"
+                                     Spacing="0"
+                                     BindableLayout.ItemsSource="{Binding .}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="{x:Type GroupingViewModels:MoveableIndividual}">
+                                    <Label Text="{Binding Name}"
+                                               Padding="5,5"
+                                               TextColor="White"
+                                               FontAttributes="Bold"
+                                               FontSize="25" />
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </Grid>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </StackLayout>
+    </ScrollView>
 </ContentView>

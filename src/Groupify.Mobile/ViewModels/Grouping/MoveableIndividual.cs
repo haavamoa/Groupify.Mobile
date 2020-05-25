@@ -8,6 +8,7 @@ namespace Groupify.Mobile.ViewModels.Grouping
     {
         private Individual m_individual;
         private bool m_isHighligted;
+        private int m_numberOfTimesGroupedWith;
 
         public MoveableIndividual(Individual individual)
         {
@@ -22,6 +23,14 @@ namespace Groupify.Mobile.ViewModels.Grouping
             set => PropertyChanged.RaiseWhenSet(ref m_isHighligted, value);
         }
 
+        public int NumberOfTimesGroupedWith
+        {
+            get => m_numberOfTimesGroupedWith;
+            set => PropertyChanged.RaiseWhenSet(ref m_numberOfTimesGroupedWith, value);
+        }
+
         public string Name => m_individual.Name;
+
+        public Individual GetIndividual() => m_individual;
     }
 }

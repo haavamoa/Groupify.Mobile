@@ -7,6 +7,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dxui="http://dips.xamarin.ui.com"
+             xmlns:converter="clr-namespace:Groupify.Mobile.Resources.Converter"
              dblend:DataContext="{dblend:DesignInstance GroupingViewModels:GroupSelectorViewModel}"
              x:DataType="{x:Type GroupingViewModels:GroupSelectorViewModel}"
              mc:Ignorable="d dblend">
@@ -47,6 +49,13 @@
                                                TextColor="White"
                                                FontAttributes="Bold"
                                                FontSize="25" />
+                                        <Label Grid.Column="1"
+                                               HorizontalTextAlignment="End"
+                                               FontSize="25"
+                                               TextColor="White"
+                                               FontAttributes="Bold" Padding="0,0,5,0"
+                                               Text="{Binding NumberOfTimesGroupedWith}"
+                                               IsVisible="{Binding NumberOfTimesGroupedWith, Converter={converter:IntegerIsEqualsConverter OtherInteger=0, Inverted=True}}"/>
                                         <BoxView BackgroundColor="Yellow"
                                                  Opacity="0"
                                                  InputTransparent="True"

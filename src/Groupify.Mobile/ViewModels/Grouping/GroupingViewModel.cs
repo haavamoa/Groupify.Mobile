@@ -18,7 +18,7 @@ namespace Groupify.Mobile.ViewModels.Grouping
         private readonly IndividualSelectorViewModel m_individualSelectorViewModel;
         private readonly ILogService m_logService;
         private IGroupingState m_currentState;
-        private int m_numberOfIndividualsInGroup;
+        private int m_numberOfIndividualsInGroup = 2;
 
         public GroupingViewModel(IDeviceDataBase deviceDataBase, ILogService logService, IndividualSelectorViewModel individualSelectorViewModel, GroupSelectorViewModel groupSelectorViewModel, GroupsOverviewViewModel groupsOverviewViewModel)
         {
@@ -51,8 +51,9 @@ namespace Groupify.Mobile.ViewModels.Grouping
             CurrentState = m_groupSelectorViewModel;
         }
 
-        public void GoToGroupsOverViewState()
+        public void GoToGroupsOverViewState(List<GroupedIndividuals> groupedGroups)
         {
+            m_groupsOverviewViewModel.Prepare(groupedGroups);
             CurrentState = m_groupsOverviewViewModel;
         }
 

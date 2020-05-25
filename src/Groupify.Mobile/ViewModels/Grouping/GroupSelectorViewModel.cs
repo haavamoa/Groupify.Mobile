@@ -2,9 +2,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using DIPS.Xamarin.UI.Commands;
+using Groupify.Mobile.Abstractions;
 using Groupify.Mobile.Extensions;
 using Groupify.Mobile.Models;
+using Groupify.Mobile.Services;
 using Groupify.Mobile.ViewModels.Grouping.Abstractions;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -16,12 +20,14 @@ namespace Groupify.Mobile.ViewModels.Grouping
         private IGroupingStateMachine m_groupingStateMachine;
         private MoveableIndividual m_highLightedIndividual;
         private List<Individual> m_selectedIndividuals;
-        public GroupSelectorViewModel()
+        private readonly IDeviceDataBase m_deviceDataBase;
+        private readonly ILogService m_logService;
+
+        public GroupSelectorViewModel(IDeviceDataBase deviceDataBase, ILogService logService)
         {
             ApproveCommand = new Command(() =>
             {
-                //Send the randomized group to overview
-                m_groupingStateMachine.GoToGroupsOverViewState();
+                m_groupingStateMachine.GoToGroupsOverViewState(GroupedGroups.Where(g => g.Any()).ToList());
             });
 
             GroupCommand = new Command<int>(numberOfIndividualsInGroup =>
@@ -34,13 +40,23 @@ namespace Groupify.Mobile.ViewModels.Grouping
                 m_groupingStateMachine.GoToIndividualSelectorState();
             });
 
-            HighlightCommand = new Command<MoveableIndividual>(individual =>
+            HighlightCommand = new AsyncCommand<MoveableIndividual>(async individual =>
              {
-                 CancelMovementCommand.Execute(null);
-                 m_highLightedIndividual = individual;
-                 m_highLightedIndividual.IsHighligted = true;
-                 var groupsToHighlight = GroupedGroups.Where(groupedIndividuals => !groupedIndividuals.Contains(individual));
-                 groupsToHighlight.ForEach(g => g.IsHighlighted = true);
+
+                 try
+                 {
+                     CancelMovementCommand.Execute(null);
+                     m_highLightedIndividual = individual;
+                     m_highLightedIndividual.IsHighligted = true;
+                     var groupsToHighlight = GroupedGroups.Where(groupedIndividuals => !groupedIndividuals.Contains(individual));
+                     groupsToHighlight.ForEach(g => g.IsHighlighted = true);
+
+                     await DisplayNumberOfTimesWithOthers(individual);
+                 }
+                 catch (System.Exception exception)
+                 {
+                     m_logService.Log(exception);
+                 }
              });
 
             CancelMovementCommand = new Command(() =>
@@ -51,6 +67,8 @@ namespace Groupify.Mobile.ViewModels.Grouping
                     m_highLightedIndividual.IsHighligted = false;
                 }
                 m_highLightedIndividual = null;
+
+                GroupedGroups.ForEach(g => g.ForEach(i => i.NumberOfTimesGroupedWith = 0));
             });
 
             MoveIndividualCommand = new Command<GroupedIndividuals>(ig =>
@@ -60,6 +78,21 @@ namespace Groupify.Mobile.ViewModels.Grouping
                 ig.Add(m_highLightedIndividual);
                 CancelMovementCommand.Execute(null);
             });
+            m_deviceDataBase = deviceDataBase;
+            m_logService = logService;
+        }
+
+        private async Task DisplayNumberOfTimesWithOthers(MoveableIndividual theIndividual)
+        {
+            var otherIndividualsGroupedWith = await m_deviceDataBase.GetAllIndividualGroupings(theIndividual.GetIndividual());
+            
+            foreach (var groupedGroup in GroupedGroups)
+            {
+                foreach (var individual in groupedGroup)
+                {
+                    individual.NumberOfTimesGroupedWith = otherIndividualsGroupedWith.Count(ig => ig.OtherIndividualId == individual.GetIndividual().Id);
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

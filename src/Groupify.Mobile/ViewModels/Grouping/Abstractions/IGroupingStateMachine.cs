@@ -7,6 +7,6 @@ namespace Groupify.Mobile.ViewModels.Grouping.Abstractions
     {
         void GoToIndividualSelectorState();
         void GoToGroupSelectorState(List<Individual> selectedIndividuals);
-        void GoToGroupsOverViewState();
+        void GoToGroupsOverViewState(List<GroupedIndividuals> lists);
     }
 }

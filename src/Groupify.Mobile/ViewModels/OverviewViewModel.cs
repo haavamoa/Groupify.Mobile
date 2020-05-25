@@ -56,7 +56,7 @@ namespace Groupify.Mobile.ViewModels
         {
             try
             {
-                //await GetAllFromDatabase(); //Use this to debug
+                await GetAllFromDatabase(); //Use this to debug
 
                 var groups = await m_database.GetAllGroups();
                 groups.ForEach(g => Groups.Add(g));
@@ -72,6 +72,10 @@ namespace Groupify.Mobile.ViewModels
         {
             var allIndividuals = await m_database.GetAllIndividuals();
             var allGroups = await m_database.GetAllGroups();
+            foreach (var individual in allIndividuals)
+            {
+                var individualGrouping = await m_database.GetAllIndividualGroupings(individual);
+            }
         }
 
         public void Setup(ViewModelConfiguration configuration)

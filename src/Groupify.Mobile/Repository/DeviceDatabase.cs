@@ -108,9 +108,9 @@ namespace Groupify.Mobile.Repository
             return Database.Table<Individual>().Where(individual => individual.GroupId == groupId).ToListAsync();
         }
 
-        public Task Save(IndividualGroupings individualGrouping) => Save(individualGrouping);
+        public Task Save(IndividualGroupings individualGrouping) => Save<IndividualGroupings>(individualGrouping, individualGrouping.Id);
         public Task Delete(IndividualGroupings individualGrouping) => Delete(individualGrouping);
-        public Task GetAllIndividualGroupings(Individual individual)
+        public Task<List<IndividualGroupings>> GetAllIndividualGroupings(Individual individual)
         {
             return Database.Table<IndividualGroupings>().Where(individualGrouping => individualGrouping.IndividualId == individual.Id).ToListAsync();
         }
