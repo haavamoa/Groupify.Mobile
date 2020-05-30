@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DIPS.Xamarin.UI.Commands;
@@ -41,6 +42,7 @@ namespace Groupify.Mobile.ViewModels
 
         public ObservableCollection<Group> Groups { get; } = new ObservableCollection<Group>();
 
+
         public bool IsRefreshing
         {
             get => m_isRefreshing;
@@ -62,13 +64,23 @@ namespace Groupify.Mobile.ViewModels
 #endif
 
                 var groups = await m_database.GetAllGroups();
-                groups.ForEach(g => Groups.Add(g));
+                AddGroups(groups);
             }
             catch (Exception exception)
             {
 
                 m_logService.Log(exception);
             }
+        }
+
+        public bool HasAnyGroups => Groups.Any();
+
+
+        private void AddGroups(List<Group> groups)
+        {
+            Groups.Clear();
+            groups.ForEach(g => Groups.Add(g));
+            PropertyChanged.Raise(nameof(HasAnyGroups));
         }
 
         private async Task GetAllFromDatabase()
@@ -99,6 +111,7 @@ namespace Groupify.Mobile.ViewModels
                 {
                     await m_database.DeleteAllIndividualGroups(groupToDelete);
                     Groups.Remove(groupToDelete);
+                    PropertyChanged.Raise(nameof(HasAnyGroups));
                 }
             }
             catch (Exception exception)
@@ -121,8 +134,7 @@ namespace Groupify.Mobile.ViewModels
             try
             {
                 var groups = await m_database.GetAllGroups();
-                Groups.Clear();
-                groups.ForEach(g => Groups.Add(g));
+                AddGroups(groups);
                 IsRefreshing = false;
             }
             catch (Exception exception)

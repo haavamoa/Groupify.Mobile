@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -53,5 +54,21 @@ namespace Groupify.Mobile.Views
         }
 
         public event EventHandler BackClicked;
+        public event EventHandler<bool> HighlightToolbarItemChanged;
+
+
+        public bool HighlightToolbarItem
+        {
+            get => (bool)GetValue(HighlightToolbarItemProperty);
+            set => SetValue(HighlightToolbarItemProperty, value);
+        }
+
+        public static readonly BindableProperty HighlightToolbarItemProperty = BindableProperty.Create(nameof(HighlightToolbarItem), typeof(bool), typeof(BackdropPage), propertyChanged:asd);
+
+        private static void asd(BindableObject bindable, object oldValue, object newValue)
+        {
+            if(!(bindable is BackdropMainView backdropMainView)) return;
+            backdropMainView.HighlightToolbarItemChanged?.Invoke(bindable, (bool)newValue);
+        }
     }
 }

@@ -15,7 +15,8 @@
                         x:DataType="{x:Type ViewModels:OverviewViewModel}"
                         ToolbarItemCommand="{Binding RegisterIndividualsGroupCommand}"
                         ToolbarItemImageSource="Add"
-                        mc:Ignorable="d dblend">
+                        mc:Ignorable="d dblend"
+                        HighlightToolbarItem="{Binding HasAnyGroups, Converter={dxui:InvertedBoolConverter}}">
     <RefreshView Command="{Binding RefreshCommand}"
                  IsRefreshing="{Binding IsRefreshing}">
         <ScrollView x:Name="ScrollView">

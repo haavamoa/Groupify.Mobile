@@ -16,10 +16,5 @@ namespace Groupify.Mobile.Views
         {
             InitializeComponent();
         }
-
-        private void BackdropMainView_BackClicked(object sender, EventArgs e)
-        {
-
-        }
     }
 }

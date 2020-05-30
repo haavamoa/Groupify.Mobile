@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using DIPS.Xamarin.UI.Controls.Popup;
 using DIPS.Xamarin.UI.Extensions;
 using Groupify.Mobile.Abstractions;
+using Groupify.Mobile.Extensions;
 using Groupify.Mobile.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Markup;
@@ -84,14 +86,21 @@ namespace Groupify.Mobile
             backdropMainView.Opacity = 0;
             titleLabel.FadeTo(0);
             var previousView = BackdropMainView;
-            //Fadeout previous view
+            //Fadeout previous view and dispose events
             if (previousView != null)
             {
                 AnimateToolbarItemButton(backdropMainView, previousView);
                 await previousView.FadeTo(0);
+
+                if(!m_navigationService.Stack.Contains(previousView))
+                {
+                    DisposeBackdropMainView(previousView);
+                }
+                
             }
 
             BackdropMainView = backdropMainView;
+            InitializeBackdropMainView(BackdropMainView);
 
             _ = titleLabel.FadeTo(1);
 
@@ -100,7 +109,41 @@ namespace Groupify.Mobile
             AnimateBackButton(previousView);
             AnimateToolbarItemButton(BackdropMainView, previousView);
 
-            mainView.Content = view;
+            mainView.Content = backdropMainView;
+        }
+
+        private CancellationTokenSource m_highlightToolbarItemCancellationToken = new CancellationTokenSource();
+
+        private void InitializeBackdropMainView(BackdropMainView mainView)
+        {
+           mainView.HighlightToolbarItemChanged += OnBackdropMainViewPropertyChanged;
+           if(mainView.HighlightToolbarItem)
+            {
+                BounceToolBarItem();
+            }
+        }
+
+        private void DisposeBackdropMainView(BackdropMainView mainView)
+        {
+            mainView.HighlightToolbarItemChanged -= OnBackdropMainViewPropertyChanged;
+        }
+
+        private void OnBackdropMainViewPropertyChanged(object sender, bool isHighlightingToolbarItem)
+        {
+            if(!(isHighlightingToolbarItem))
+            {
+                m_highlightToolbarItemCancellationToken.Cancel();
+                m_highlightToolbarItemCancellationToken = new CancellationTokenSource();
+            }
+            else
+            {
+                BounceToolBarItem();
+            }
+        }
+
+        private void BounceToolBarItem()
+        {
+            toolbarItemButton.Bounce(m_highlightToolbarItemCancellationToken.Token);
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -233,5 +276,8 @@ namespace Groupify.Mobile
                 return true;
             }
         }
+
+
+
     }
 }
