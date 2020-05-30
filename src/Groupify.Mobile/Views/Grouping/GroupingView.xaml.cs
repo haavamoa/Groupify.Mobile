@@ -21,19 +21,16 @@ namespace Groupify.Mobile.Views.Grouping
 
         private void OnBigButtonPressed(object sender, EventArgs e)
         {
-            if(m_currentState is IndividualSelectorViewModel)
+            if(m_currentState is IndividualSelectorViewModel individualSelectorViewModel)
             {
-                if (((GroupingViewModel)BindingContext).NumberOfIndividualsInGroup == 0)
+                if (((GroupingViewModel)BindingContext).NumberOfIndividualsInGroup == 0 || (!(int.TryParse(NumberOfIndividualsInGroupEntry.Text, out var number))))
                 {
                     NumberOfIndividualsInGroupFrame.Shake();
                     NumberOfIndividualsInGroupEntry.Focus();
                     NumberOfIndividualsInGroupEntry.CursorPosition = 1;
                     NumberOfIndividualsInGroupEntry.SelectionLength = 1;
+                    return;
                 }
-            }
-
-            if(m_currentState is IndividualSelectorViewModel individualSelectorViewModel)
-            {
                 individualSelectorViewModel.GroupCommand.Execute(((GroupingViewModel)BindingContext).NumberOfIndividualsInGroup);
             }
             else if(m_currentState is GroupSelectorViewModel groupSelectorViewModel)
