@@ -23,7 +23,16 @@
                                  Padding="15"
                                  BackgroundColor="{StaticResource ThemeDarker}"
                                  CornerRadius="25"
-                                 VerticalOptions="Start">
+                                 VerticalOptions="Start"
+                                 >
+            <pancakeview:PancakeView.Triggers>
+                <DataTrigger TargetType="pancakeview:PancakeView"
+                             Binding="{Binding CurrentState, Converter={converter:DataTypeConverter}}"
+                             Value="{x:Type GroupingViewModels:GroupsOverviewViewModel}">
+                    <Setter Property="IsVisible"
+                            Value="False" />
+                </DataTrigger>
+            </pancakeview:PancakeView.Triggers>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

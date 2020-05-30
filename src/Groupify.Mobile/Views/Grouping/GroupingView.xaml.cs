@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Groupify.Mobile.Extensions;
 using Groupify.Mobile.ViewModels.Grouping;
 using Groupify.Mobile.ViewModels.Grouping.Abstractions;
@@ -21,7 +20,7 @@ namespace Groupify.Mobile.Views.Grouping
 
         private void OnBigButtonPressed(object sender, EventArgs e)
         {
-            if(m_currentState is IndividualSelectorViewModel individualSelectorViewModel)
+            if (m_currentState is IndividualSelectorViewModel individualSelectorViewModel)
             {
                 if (((GroupingViewModel)BindingContext).NumberOfIndividualsInGroup == 0 || (!(int.TryParse(NumberOfIndividualsInGroupEntry.Text, out var number))))
                 {
@@ -33,13 +32,9 @@ namespace Groupify.Mobile.Views.Grouping
                 }
                 individualSelectorViewModel.GroupCommand.Execute(((GroupingViewModel)BindingContext).NumberOfIndividualsInGroup);
             }
-            else if(m_currentState is GroupSelectorViewModel groupSelectorViewModel)
+            else if (m_currentState is GroupSelectorViewModel groupSelectorViewModel)
             {
                 groupSelectorViewModel.ApproveCommand.Execute(null);
-            }
-            else if(m_currentState is GroupsOverviewViewModel groupsOverviewViewModel)
-            {
-                groupsOverviewViewModel.DoneCommand.Execute(null);
             }
         }
 
@@ -51,7 +46,7 @@ namespace Groupify.Mobile.Views.Grouping
 
         private void OnGroupingViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName.Equals(nameof(GroupingViewModel.CurrentState)))
+            if (e.PropertyName.Equals(nameof(GroupingViewModel.CurrentState)))
             {
                 //Cleanup
                 if (m_currentState is GroupSelectorViewModel)
@@ -61,8 +56,8 @@ namespace Groupify.Mobile.Views.Grouping
 
                 //Initialize new state
                 m_currentState = ((GroupingViewModel)BindingContext).CurrentState;
-                
-                if(m_currentState is IndividualSelectorViewModel)
+
+                if (m_currentState is IndividualSelectorViewModel)
                 {
                     CurrentStateContentView.Content = new IndividualSelectorView();
                 }
@@ -84,11 +79,15 @@ namespace Groupify.Mobile.Views.Grouping
 
         private async void OnBackClicked(object sender, EventArgs e)
         {
-            var shouldClose = await ((BackdropPage)App.Current.MainPage).ConfirmClosingGrouping();
-            if(shouldClose)
+            if (m_currentState is GroupSelectorViewModel)
             {
-                ((BackdropPage)App.Current.MainPage).GoBack();
+                var shouldClose = await ((BackdropPage)Application.Current.MainPage).ConfirmClosingGrouping();
+                if (!(shouldClose))
+                {
+                    return;
+                }
             }
+            ((BackdropPage)Application.Current.MainPage).GoBack();
         }
     }
 }

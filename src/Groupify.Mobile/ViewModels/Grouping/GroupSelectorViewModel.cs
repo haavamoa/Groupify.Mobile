@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -25,9 +26,27 @@ namespace Groupify.Mobile.ViewModels.Grouping
 
         public GroupSelectorViewModel(IDeviceDataBase deviceDataBase, ILogService logService)
         {
-            ApproveCommand = new Command(() =>
+            ApproveCommand = new AsyncCommand(async () =>
             {
                 m_groupingStateMachine.GoToGroupsOverViewState(GroupedGroups.Where(g => g.Any()).ToList());
+                try
+                {
+                    foreach (var groupedGroup in GroupedGroups)
+                    {
+                        foreach (var individual in groupedGroup)
+                        {
+                            var otherIndividualsInGroup = groupedGroup.Where(individualInGroup => individualInGroup.GetIndividual().Id != individual.GetIndividual().Id);
+                            foreach (var otherIndividual in otherIndividualsInGroup)
+                            {
+                                await m_deviceDataBase.Save(new IndividualGroupings() { IndividualId = individual.GetIndividual().Id, OtherIndividualId = otherIndividual.GetIndividual().Id });
+                            }
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    m_logService.Log(exception);
+                }
             });
 
             GroupCommand = new Command<int>(numberOfIndividualsInGroup =>
@@ -84,7 +103,7 @@ namespace Groupify.Mobile.ViewModels.Grouping
 
         private async Task DisplayNumberOfTimesWithOthers(MoveableIndividual theIndividual)
         {
-            var otherIndividualsGroupedWith = await m_deviceDataBase.GetAllIndividualGroupings(theIndividual.GetIndividual());
+            var otherIndividualsGroupedWith = await m_deviceDataBase.GetAllIndividualGroupingsForIndividual(theIndividual.GetIndividual());
             
             foreach (var groupedGroup in GroupedGroups)
             {

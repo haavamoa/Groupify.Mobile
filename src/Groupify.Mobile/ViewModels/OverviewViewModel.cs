@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -56,7 +57,9 @@ namespace Groupify.Mobile.ViewModels
         {
             try
             {
-                await GetAllFromDatabase(); //Use this to debug
+#if DEBUG
+                //await GetAllFromDatabase(); //Use this to debug
+#endif
 
                 var groups = await m_database.GetAllGroups();
                 groups.ForEach(g => Groups.Add(g));
@@ -72,10 +75,7 @@ namespace Groupify.Mobile.ViewModels
         {
             var allIndividuals = await m_database.GetAllIndividuals();
             var allGroups = await m_database.GetAllGroups();
-            foreach (var individual in allIndividuals)
-            {
-                var individualGrouping = await m_database.GetAllIndividualGroupings(individual);
-            }
+            var individualGrouping = await m_database.GetAllIndividualGroupings();
         }
 
         public void Setup(ViewModelConfiguration configuration)

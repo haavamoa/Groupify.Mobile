@@ -8,7 +8,8 @@
              x:Class="Groupify.Mobile.Views.Grouping.GroupOverviewView"
              x:DataType="{x:Type GroupingViewModels:GroupsOverviewViewModel}"
              xmlns:dblend="http://schemas.microsoft.com/expression/blend/2008"
-             dblend:DataContext="{dblend:DesignInstance GroupingViewModels:GroupsOverviewViewModel}">
+             dblend:DataContext="{dblend:DesignInstance GroupingViewModels:GroupsOverviewViewModel}"
+             Padding="0,20,0,0">
     <ScrollView>
         <StackLayout BindableLayout.ItemsSource="{Binding GroupedGroups}"
                      Spacing="0">

@@ -14,42 +14,6 @@ namespace Groupify.Mobile.ViewModels.Grouping
 {
     public class GroupsOverviewViewModel : IGroupingState
     {
-        private readonly IDeviceDataBase m_deviceDataBase;
-        private readonly ILogService m_logService;
-
-        public GroupsOverviewViewModel(IDeviceDataBase deviceDataBase, ILogService logService, INavigationService navigationService)
-        {
-            DoneCommand = new AsyncCommand(async () =>
-            {
-                try
-                {
-                    foreach (var groupedGroup in GroupedGroups)
-                    {
-                        foreach (var individual in groupedGroup)
-                        {
-                            var otherIndividualsInGroup = groupedGroup.Where(individualInGroup => individualInGroup.GetIndividual().Id != individual.GetIndividual().Id);
-                            foreach (var otherIndividual in otherIndividualsInGroup)
-                            {
-                                await m_deviceDataBase.Save(new IndividualGroupings() { IndividualId = individual.GetIndividual().Id, OtherIndividualId = otherIndividual.GetIndividual().Id });
-                                ;
-                            }
-                        }
-                    }
-
-                    await navigationService.GoBack();
-                }
-                catch (Exception exception)
-                {
-                    m_logService.Log(exception);
-                }
-
-            });
-            m_deviceDataBase = deviceDataBase;
-            m_logService = logService;
-        }
-
-        public ICommand DoneCommand { get; }
-
         public ObservableCollection<GroupedIndividuals> GroupedGroups { get; } = new ObservableCollection<GroupedIndividuals>();
 
         public void Initialize(IGroupingStateMachine groupingStateMachine)
