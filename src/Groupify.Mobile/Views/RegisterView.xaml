@@ -149,7 +149,6 @@
                 <Button Padding="50,15"
                         BackgroundColor="{StaticResource Theme}"
                         Clicked="ValidateCriteriaToRegister"
-                        Command="{Binding AddIndividualsGroupCommand}"
                         CornerRadius="50"
                         FontAttributes="Bold"
                         FontSize="32"

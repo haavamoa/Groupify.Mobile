@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Groupify.Mobile.Extensions;
 using Groupify.Mobile.ViewModels;
@@ -23,10 +24,11 @@ namespace Groupify.Mobile.Views
         private void ValidateCriteriaToRegister(object sender, EventArgs e)
         {
             var vm = ((RegisterViewModel)BindingContext);
-            if (string.IsNullOrEmpty(vm.NewGroupName))
+            if (string.IsNullOrEmpty(vm.NewGroupName) || vm.NewGroupName.All(c => char.IsWhiteSpace(c)))
             {
                 NewGroupNameEntry.Shake();
                 NewGroupNameEntry.Focus();
+                return;
             }
 
             if (vm.Individuals.Count == 0)
@@ -35,8 +37,10 @@ namespace Groupify.Mobile.Views
                 if(!string.IsNullOrEmpty(vm.NewGroupName))
                 {
                     IndividualNameEntry.Focus();
+                    return;
                 }
             }
+            vm.AddIndividualsGroupCommand.Execute(null);
         }
 
         private async void OnBackClicked(object sender, EventArgs e)

@@ -87,11 +87,6 @@ namespace Groupify.Mobile.ViewModels
 
         private async Task AddIndividualsGroup()
         {
-            if (string.IsNullOrEmpty(NewGroupName) || Individuals.Count == 0)
-            {
-                return;
-            }
-
             try
             {
                 m_newGroup.Count = Individuals.Count;
