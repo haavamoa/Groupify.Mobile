@@ -10,7 +10,7 @@
                         xmlns:dxui="http://dips.xamarin.ui.com"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                         xmlns:pancakeview="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
-                        Title="Klasser"
+                        Title="Groupify"
                         dblend:DataContext="{dblend:DesignInstance ViewModels:OverviewViewModel}"
                         x:DataType="{x:Type ViewModels:OverviewViewModel}"
                         ToolbarItemCommand="{Binding RegisterIndividualsGroupCommand}"
