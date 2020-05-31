@@ -81,7 +81,7 @@ namespace Groupify.Mobile.Views.Grouping
         {
             if (m_currentState is GroupSelectorViewModel)
             {
-                var shouldClose = await ((BackdropPage)Application.Current.MainPage).ConfirmClosingGrouping();
+                var shouldClose = await ((BackdropPage)Application.Current.MainPage).Confirm("Er du sikker på at du vil avslutte grupperingen og miste endringene?", "Avslutt");
                 if (!(shouldClose))
                 {
                     return;

@@ -12,6 +12,7 @@
                         Title="Ny klasse"
                         dblend:DataContext="{dblend:DesignInstance ViewModels:RegisterViewModel}"
                         x:DataType="{x:Type ViewModels:RegisterViewModel}"
+                        BackClicked="OnBackClicked"
                         mc:Ignorable="d dblend">
     <Views:BackdropMainView.Triggers>
         <DataTrigger Binding="{Binding IsEditing}"

@@ -106,7 +106,7 @@ namespace Groupify.Mobile.ViewModels
             
             try
             {
-                var shouldRemove = await ((BackdropPage)Application.Current.MainPage).ConfirmDeletion();
+                var shouldRemove = await ((BackdropPage)Application.Current.MainPage).Confirm($"Er du sikker på at du vil slette {groupToDelete.Name}?", "Slett");
                 if(shouldRemove)
                 {
                     await m_database.DeleteAllIndividualGroups(groupToDelete);

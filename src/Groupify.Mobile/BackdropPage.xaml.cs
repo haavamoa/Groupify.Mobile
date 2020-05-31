@@ -57,24 +57,17 @@ namespace Groupify.Mobile
 
         public static readonly BindableProperty ConfirmMessageProperty = BindableProperty.Create(nameof(ConfirmMessage), typeof(string), typeof(BackdropPage));
 
-        public Task<bool> ConfirmDeletion()
+
+        public Task<bool> Confirm(string confirmationTitleText, string confirmationText)
         {
             m_confirmationTaskCompletetionSource = new TaskCompletionSource<bool>();
+            ConfirmationTitleLabel.Text = confirmationTitleText;
+            ConfirmConfirmationButton.Text = confirmationText;
             ConfirmationPopupFrame.TranslateTo(0, m_confirmationPopupFramePosition, easing: Easing.SinOut);
             Overlay.FadeTo(0.4);
             Overlay.InputTransparent = false;
             return m_confirmationTaskCompletetionSource.Task;
         }
-
-        public Task<bool> ConfirmClosingGrouping()
-        {
-            m_confirmationTaskCompletetionSource = new TaskCompletionSource<bool>();
-            CloseGroupingConfirmationFrame.TranslateTo(0, m_confirmationPopupFramePosition, easing: Easing.SinOut);
-            Overlay.FadeTo(0.4);
-            Overlay.InputTransparent = false;
-            return m_confirmationTaskCompletetionSource.Task;
-        }
-
 
         public async Task SetView(ContentView view)
         {
@@ -214,7 +207,6 @@ namespace Groupify.Mobile
         {
             await Task.WhenAll(
                 ConfirmationPopupFrame.TranslateTo(0, Height, easing: Easing.SinIn),
-                CloseGroupingConfirmationFrame.TranslateTo(0, Height, easing: Easing.SinIn),
                 Overlay.FadeTo(0)
             );
             Overlay.InputTransparent = true;
@@ -225,7 +217,6 @@ namespace Groupify.Mobile
         {
             await Task.WhenAll(
                 ConfirmationPopupFrame.TranslateTo(0, Height, easing: Easing.SinIn),
-                CloseGroupingConfirmationFrame.TranslateTo(0, Height, easing: Easing.SinIn),
                 Overlay.FadeTo(0)
             );
             Overlay.InputTransparent = true;
@@ -239,9 +230,14 @@ namespace Groupify.Mobile
 
         private void RemoveConfirmationPopups()
         {
+            if(m_confirmationTaskCompletetionSource?.Task != null) //Because setting the text will result in the view getting resized, we need to check if we are about to move the frame to not hide it
+            {
+                if (!m_confirmationTaskCompletetionSource.Task.IsCompleted)
+                    return;
+            }
+            
             m_confirmationPopupFramePosition = ConfirmationPopupFrame.TranslationY;
             ConfirmationPopupFrame.TranslationY = Height;
-            CloseGroupingConfirmationFrame.TranslationY = Height;
         }
 
         protected override bool OnBackButtonPressed()

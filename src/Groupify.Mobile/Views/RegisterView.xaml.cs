@@ -39,6 +39,21 @@ namespace Groupify.Mobile.Views
             }
         }
 
-       
+        private async void OnBackClicked(object sender, EventArgs e)
+        {
+            var vm = ((RegisterViewModel)BindingContext);
+            if (!(string.IsNullOrEmpty(vm.NewGroupName)) || vm.Individuals.Count != 0)
+            {
+                var shouldGoBack = await ((BackdropPage)App.Current.MainPage).Confirm("Er du sikker på at du vil avslutte registreringen og miste endringene?", "Avslutt");
+                if (shouldGoBack)
+                {
+                    ((BackdropPage)App.Current.MainPage).GoBack();
+                }
+            }
+            else
+            {
+                ((BackdropPage)App.Current.MainPage).GoBack();
+            }
+        }
     }
 }
