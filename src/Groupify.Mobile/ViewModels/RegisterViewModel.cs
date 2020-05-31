@@ -31,7 +31,7 @@ namespace Groupify.Mobile.ViewModels
             m_navigationService = navigationService;
             m_logService = logService;
             AddIndividualsGroupCommand = new AsyncCommand(AddIndividualsGroup);
-            AddIndividualCommand = new Command(AddIndividual, () => !string.IsNullOrEmpty(NewIndividualName));
+            AddIndividualCommand = new Command(AddIndividual);
             RemoveIndividualCommand = new AsyncCommand<Individual>(RemoveIndividual);
         }
 

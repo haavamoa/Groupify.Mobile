@@ -16,12 +16,22 @@ namespace Groupify.Mobile.Views
             InitializeComponent();
         }
 
-        private void FocusIndividualNameEntry(object sender, EventArgs e)
+        private async void TryAddIndividual(object sender, EventArgs e)
         {
-            IndividualNameEntry.Focus();
+            var vm = ((RegisterViewModel)BindingContext);
+            if (string.IsNullOrEmpty(vm.NewIndividualName) || vm.NewIndividualName.All(c => char.IsWhiteSpace(c)))
+            {
+                await Task.Delay(100);
+                IndividualNameEntry.Shake();
+                IndividualNameEntry.Focus();
+            }
+            else
+            {
+                vm.AddIndividualCommand.Execute(null);
+            }
         }
 
-        private void ValidateCriteriaToRegister(object sender, EventArgs e)
+        private void TryAddIndividualsGroup(object sender, EventArgs e)
         {
             var vm = ((RegisterViewModel)BindingContext);
             if (string.IsNullOrEmpty(vm.NewGroupName) || vm.NewGroupName.All(c => char.IsWhiteSpace(c)))
